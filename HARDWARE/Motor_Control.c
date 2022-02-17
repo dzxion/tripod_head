@@ -109,13 +109,13 @@ void Gimbal_Control(void)
 			
 			Conversion();
 			
-//			PID_run_FloatspdVolt(&Pitch_Angel_PID,0.0f,pitch);//角度环
+			PID_run_FloatspdVolt(&Pitch_Angel_PID,0.0f,pitch);//角度环
 			PID_run_FloatspdVolt(&Pitch_Speed_PID,Pitch_Angel_PID.PID_Out,GimbalGyro_x);//角速度环
 			
-//			PID_run_FloatspdVolt(&Roll_Angel_PID ,0.0f,roll);
+			PID_run_FloatspdVolt(&Roll_Angel_PID ,0.0f,roll);
 			PID_run_FloatspdVolt(&Roll_Speed_PID,Roll_Angel_PID.PID_Out,GimbalGyro_y);
 //			
-//			PID_run_FloatspdVolt(&Yaw_Angel_PID,0.0f,yaw);									
+			PID_run_FloatspdVolt(&Yaw_Angel_PID,0.0f,yaw);									
 			PID_run_FloatspdVolt(&Yaw_Speed_PID,Yaw_Angel_PID.PID_Out,GimbalGyro_z);
 			
 			if(Pitch_Speed_PID.PID_Out > 0.5f)Pitch_Speed_PID.PID_Out = 0.5f; 
@@ -128,8 +128,8 @@ void Gimbal_Control(void)
 			else if(Yaw_Speed_PID.PID_Out < -0.3f)Yaw_Speed_PID.PID_Out = -0.3f;
 			
 			SendMotor(0);
-//			MotorOut_PR(Get_Encoder.Angle_P*MotorPR_Radian,Pitch_Speed_PID.PID_Out,0.0f);// Angle,Vq <= 0.5f,校准 Vd = 0.3f
-			MotorOut_PR(0.0f,0.0f,0.3f);
+			MotorOut_PR(Get_Encoder.Angle_P*MotorPR_Radian,Pitch_Speed_PID.PID_Out,0.0f);// Angle,Vq <= 0.5f,校准 Vd = 0.3f
+//			MotorOut_PR(0.0f,0.0f,0.3f);
 			Oscilloscope();//数据打印			
 			R_LED_Status(3);
 			G_LED_Status(4);
@@ -157,10 +157,10 @@ void Gimbal_Control(void)
 				{
 					if(Get_Motor.cmd == 0x00)
 					{
-//						MotorOut_PR(Get_Encoder.Angle_R*MotorPR_Radian,Get_Motor.roll,0.0f);// Angle,Vq <= 0.5f,校准 Vd = 0.3f
-//		        MotorOut_Y(Get_Encoder.Angle_Y*MotorPR_Radian,Get_Motor.yaw,0.0f);// Angle,Vq <= 0.3f,校准 Vd = 0.15f
-						MotorOut_PR(0.0f,0.0f,0.3f);
-						MotorOut_Y(0.0f,0.0f,0.15f);
+						MotorOut_PR(Get_Encoder.Angle_R*MotorPR_Radian,Get_Motor.roll,0.0f);// Angle,Vq <= 0.5f,校准 Vd = 0.3f
+		                MotorOut_Y(Get_Encoder.Angle_Y*MotorPR_Radian,Get_Motor.yaw,0.0f);// Angle,Vq <= 0.3f,校准 Vd = 0.15f
+//						MotorOut_PR(0.0f,0.0f,0.3f);
+//						MotorOut_Y(0.0f,0.0f,0.15f);
 					}
 				}				
 			}
