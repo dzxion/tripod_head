@@ -15,7 +15,7 @@ int8_t Gyro_Temp = 0;
 void Conversion(void)
 {
 	Read_MPU6500(ReadMPU6500);
-	
+	//右上后
 	Acc_x = ((ReadMPU6500[0]<<8)|ReadMPU6500[1]);
 	Acc_y = ((ReadMPU6500[2]<<8)|ReadMPU6500[3]);
 	Acc_z = ((ReadMPU6500[4]<<8)|ReadMPU6500[5]);
@@ -23,9 +23,14 @@ void Conversion(void)
 	MPU6500_raw = ((ReadMPU6500[6]<<8)|ReadMPU6500[7]) - 21;
 	MPU6500_Temp = 20.0f + (float)(MPU6500_raw/333.87f);	
 	Gyro_Temp = (int8_t)MPU6500_Temp;
+	//右后上
+//	Gyro_x = ((ReadMPU6500[8]<<8)|ReadMPU6500[9]);//X
+//	Gyro_y = ((ReadMPU6500[12]<<8)|ReadMPU6500[13]);//Y
+//	Gyro_z = ((ReadMPU6500[10]<<8)|ReadMPU6500[11]);//Z
 	
-	Gyro_x = ((ReadMPU6500[8]<<8)|ReadMPU6500[9]);//X
-	Gyro_y = ((ReadMPU6500[12]<<8)|ReadMPU6500[13]);//Y
+	//前左上
+	Gyro_x = -((ReadMPU6500[12]<<8)|ReadMPU6500[13]);//X
+	Gyro_y = -((ReadMPU6500[8]<<8)|ReadMPU6500[9]);//Y
 	Gyro_z = ((ReadMPU6500[10]<<8)|ReadMPU6500[11]);//Z
 	
 	GimbalGyro_x = Gyro_x/32.8f;	

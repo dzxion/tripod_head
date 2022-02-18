@@ -19,7 +19,7 @@ void SendMotor(u8 CMD)
 	Send_Motor.head_a = 0x6a;
 	Send_Motor.head_b = 0x6c;
 	Send_Motor.cmd = CMD;
-	Send_Motor.roll = -Roll_Speed_PID.PID_Out;
+	Send_Motor.roll = Roll_Speed_PID.PID_Out;
 	Send_Motor.yaw  =  Yaw_Speed_PID.PID_Out;
 	for(Check_c=0;Check_c<(sizeof(Send_Motor)-1);Check_c++)
 	{
@@ -109,14 +109,15 @@ void Gimbal_Control(void)
 			
 			Conversion();
 			
-			PID_run_FloatspdVolt(&Pitch_Angel_PID,0.0f,pitch);//角度环
-			PID_run_FloatspdVolt(&Pitch_Speed_PID,Pitch_Angel_PID.PID_Out,GimbalGyro_x);//角速度环
+//			PID_run_FloatspdVolt(&Pitch_Angel_PID,0.0f,pitch);//角度环
+			PID_run_FloatspdVolt(&Pitch_Speed_PID,0.0f,GimbalGyro_y);//角速度环
 			
-			PID_run_FloatspdVolt(&Roll_Angel_PID ,0.0f,roll);
-			PID_run_FloatspdVolt(&Roll_Speed_PID,Roll_Angel_PID.PID_Out,GimbalGyro_y);
-//			
-			PID_run_FloatspdVolt(&Yaw_Angel_PID,0.0f,yaw);									
-			PID_run_FloatspdVolt(&Yaw_Speed_PID,Yaw_Angel_PID.PID_Out,GimbalGyro_z);
+//			PID_run_FloatspdVolt(&Roll_Angel_PID ,0.0f,roll);
+//			PID_run_FloatspdVolt(&Roll_Speed_PID,Roll_Angel_PID.PID_Out,GimbalGyro_x);
+			PID_run_FloatspdVolt(&Roll_Speed_PID,0.0f,GimbalGyro_x);
+						
+//			PID_run_FloatspdVolt(&Yaw_Angel_PID,0.0f,yaw);									
+			PID_run_FloatspdVolt(&Yaw_Speed_PID,0.0f,GimbalGyro_z);
 			
 			if(Pitch_Speed_PID.PID_Out > 0.5f)Pitch_Speed_PID.PID_Out = 0.5f; 
 			else if(Pitch_Speed_PID.PID_Out < -0.5f)Pitch_Speed_PID.PID_Out = -0.5f;
@@ -126,9 +127,16 @@ void Gimbal_Control(void)
 			
 			if(Yaw_Speed_PID.PID_Out > 0.3f)Yaw_Speed_PID.PID_Out = 0.3f; 
 			else if(Yaw_Speed_PID.PID_Out < -0.3f)Yaw_Speed_PID.PID_Out = -0.3f;
-			
+//			Yaw_Speed_PID.PID_Out =0.0f;
+//			Roll_Speed_PID.PID_Out =0.0f;
 			SendMotor(0);
-			MotorOut_PR(Get_Encoder.Angle_P*MotorPR_Radian,Pitch_Speed_PID.PID_Out,0.0f);// Angle,Vq <= 0.5f,校准 Vd = 0.3f
+			//正常运行
+			MotorOut_PR(Get_Encoder.Angle_P*MotorPR_Radian,-Pitch_Speed_PID.PID_Out,0.0f);// Angle,Vq <= 0.5f,校准 Vd = 0.3f
+			//调试电机
+//			MotorOut_PR(Get_Encoder.Angle_P*MotorPR_Radian,0.1f,0.0f);// Angle,Vq <= 0.5f,校准 Vd = 0.3f
+			//关闭电机
+//			MotorOut_PR(0.0f,0.0f,0.0f);
+			//校准电机
 //			MotorOut_PR(0.0f,0.0f,0.3f);
 			Oscilloscope();//数据打印			
 			R_LED_Status(3);
@@ -157,10 +165,18 @@ void Gimbal_Control(void)
 				{
 					if(Get_Motor.cmd == 0x00)
 					{
+						//正常运行
 						MotorOut_PR(Get_Encoder.Angle_R*MotorPR_Radian,Get_Motor.roll,0.0f);// Angle,Vq <= 0.5f,校准 Vd = 0.3f
 		                MotorOut_Y(Get_Encoder.Angle_Y*MotorPR_Radian,Get_Motor.yaw,0.0f);// Angle,Vq <= 0.3f,校准 Vd = 0.15f
+						//电机调试
+//						MotorOut_PR(Get_Encoder.Angle_R*MotorPR_Radian,0.1f,0.0f);// Angle,Vq <= 0.5f,校准 Vd = 0.3f
+//		                MotorOut_Y(Get_Encoder.Angle_Y*MotorPR_Radian,0.1f,0.0f);// Angle,Vq <= 0.3f,校准 Vd = 0.15f
+						//电机校准
 //						MotorOut_PR(0.0f,0.0f,0.3f);
 //						MotorOut_Y(0.0f,0.0f,0.15f);
+						//电机关闭
+//						MotorOut_PR(0.0f,0.0f,0.0f);// Angle,Vq <= 0.5f,校准 Vd = 0.3f
+//						MotorOut_Y(0.0f,0.0f,0.0f);// Angle,Vq <= 0.3f,校准 Vd = 0.15f
 					}
 				}				
 			}

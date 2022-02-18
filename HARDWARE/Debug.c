@@ -34,13 +34,13 @@ void Oscilloscope(void)
 		
 		Debug_Data.data6  = Gyro_y;
 		Debug_Data.data7  = Gyro_z;
-		Debug_Data.data8  = 0;
-		Debug_Data.data9  = 0;
-		Debug_Data.data10 = 0;
+		Debug_Data.data8  = Roll_Speed_PID.PID_Out;
+		Debug_Data.data9  = Pitch_Speed_PID.PID_Out;
+		Debug_Data.data10 = Yaw_Speed_PID.PID_Out;
 		
-		Debug_Data.data11 = 0;
-		Debug_Data.data12 = 0;
-		Debug_Data.data13 = 0;
+		Debug_Data.data11 = GimbalGyro_x;
+		Debug_Data.data12 = GimbalGyro_y;
+		Debug_Data.data13 = GimbalGyro_z;
 		Debug_Data.data14 = 0;
 		Debug_Data.data15 = 0;
 		Debug_Data.data16 = 0;

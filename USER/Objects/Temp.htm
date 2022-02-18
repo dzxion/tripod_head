@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\Temp.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\Temp.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Thu Feb 17 11:26:25 2022
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Fri Feb 18 15:04:53 2022
 <BR><P>
 <H3>Maximum Stack Usage =        168 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -450,7 +450,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gimbal_Init
 </UL>
 
-<P><STRONG><a name="[69]"></a>Conversion</STRONG> (Thumb, 276 bytes, Stack size 8 bytes, ahrs.o(i.Conversion))
+<P><STRONG><a name="[69]"></a>Conversion</STRONG> (Thumb, 280 bytes, Stack size 8 bytes, ahrs.o(i.Conversion))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = Conversion &rArr; Read_MPU6500 &rArr; SPI3_ReadWriteByte
 </UL>
 <BR>[Calls]<UL><LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Read_MPU6500
@@ -613,7 +613,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[77]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gimbal_Control
 </UL>
 
-<P><STRONG><a name="[77]"></a>Gimbal_Control</STRONG> (Thumb, 922 bytes, Stack size 16 bytes, motor_control.o(i.Gimbal_Control))
+<P><STRONG><a name="[77]"></a>Gimbal_Control</STRONG> (Thumb, 844 bytes, Stack size 16 bytes, motor_control.o(i.Gimbal_Control))
 <BR><BR>[Stack]<UL><LI>Max Depth = 112<LI>Call Chain = Gimbal_Control &rArr; MotorOut_Y &rArr; FOC_SVPWM8
 </UL>
 <BR>[Calls]<UL><LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PID_run_FloatspdVolt (via Veneer)
@@ -761,7 +761,7 @@ Global Symbols
 <LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gpio_Exti
 </UL>
 
-<P><STRONG><a name="[7b]"></a>Oscilloscope</STRONG> (Thumb, 296 bytes, Stack size 8 bytes, debug.o(i.Oscilloscope))
+<P><STRONG><a name="[7b]"></a>Oscilloscope</STRONG> (Thumb, 322 bytes, Stack size 8 bytes, debug.o(i.Oscilloscope))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = Oscilloscope &rArr; UART1_SendDataDMA
 </UL>
 <BR>[Calls]<UL><LI><a href="#[9e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART1_SendDataDMA
@@ -977,7 +977,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gpio_Exti
 </UL>
 
-<P><STRONG><a name="[79]"></a>SendMotor</STRONG> (Thumb, 86 bytes, Stack size 16 bytes, motor_control.o(i.SendMotor))
+<P><STRONG><a name="[79]"></a>SendMotor</STRONG> (Thumb, 82 bytes, Stack size 16 bytes, motor_control.o(i.SendMotor))
 <BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = SendMotor &rArr; UART3_SendDataDMA
 </UL>
 <BR>[Calls]<UL><LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART3_SendDataDMA
