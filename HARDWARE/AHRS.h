@@ -16,7 +16,7 @@ extern float MPU6500_Temp;
 extern int8_t Gyro_Temp;
 
 void Conversion(void);
-void MS_Attitude(void);
+void MS_Attitude_Mahony(void);
 void MS_Attitude_Acconly(void);
 void MS_Attitude_GyroIntegral(void);
 void init_MS_Attitude(void);

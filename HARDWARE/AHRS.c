@@ -114,8 +114,60 @@ void MS_Attitude_GyroIntegral(void)
 	yaw = atan2( 2.0f*(q[0]*q[3]+q[1]*q[2]) , 1.0f-2.0f*(q[2]*q[2]+q[3]*q[3]) );
 }
 
-void MS_Attitude(void)
+float Kp = 0.1f;
+void MS_Attitude_Mahony(void)
 {
+	delta_angle[0] = GimbalGyro_x * sample_time_gyro;
+	delta_angle[1] = GimbalGyro_y * sample_time_gyro;
+	delta_angle[2] = GimbalGyro_z * sample_time_gyro;
 	
+	float tqw=q[0];	float tqx=q[1];	float tqy=q[2];	float tqz=q[3];
+	q[0] += 0.5f * ( -tqx*delta_angle[0] - tqy*delta_angle[1] - tqz*delta_angle[2] );
+	q[1] += 0.5f * ( tqw*delta_angle[0] + tqy*delta_angle[2] - tqz*delta_angle[1] );
+	q[2] += 0.5f * ( tqw*delta_angle[1] - tqx*delta_angle[2] + tqz*delta_angle[0] );
+	q[3] += 0.5f * ( tqw*delta_angle[2] + tqx*delta_angle[1] - tqy*delta_angle[0] );
+	
+	float q_norm = sqrt(q[0]*q[0] + q[1]*q[1] + q[2]*q[2] + q[3]*q[3]);
+	q[0] = q[0] / q_norm;
+	q[1] = q[1] / q_norm;
+	q[2] = q[2] / q_norm;
+	q[3] = q[3] / q_norm;
+	
+	float vx = 2.0f*(q[1]*q[3]-q[0]*q[2]);
+	float vy = 2.0f*(q[0]*q[1]+q[2]*q[3]);
+	float vz = q[0]*q[0]-q[1]*q[1]-q[2]*q[2]+q[3]*q[3];
+	
+	float acc_norm = sqrt(Acc_x*Acc_x + Acc_y*Acc_y + Acc_z*Acc_z);
+	float ax = Acc_x / acc_norm;
+	float ay = Acc_y / acc_norm;
+	float az = Acc_z / acc_norm;
+	
+	float ex = ay * vz - az * vy;
+	float ey = az * vx - ax * vz;
+	float ez = ax * vy - ay * vx;
+	
+	float err_angle = sqrt(ex*ex + ey*ey + ez*ez);
+	ex = ex / err_angle;
+	ey = ey / err_angle;
+	ez = ez / err_angle;
+	err_angle = err_angle * Kp;
+	
+	float half_sinerr = sin(0.5f*err_angle);
+	float half_coserr = cos(0.5f*err_angle);
+	float q_err[4] = {half_coserr,half_sinerr*ex,half_sinerr*ey,half_sinerr*ez};
+	q[0] = q[0]*q_err[0] - q[1]*q_err[1] - q[2]*q_err[2] - q[3]*q_err[3];
+	q[1] = q[0]*q_err[1] + q[1]*q_err[0] + q[2]*q_err[3] - q[3]*q_err[2];
+	q[2] = q[0]*q_err[2] + q[2]*q_err[0] - q[1]*q_err[3] + q[3]*q_err[1];
+	q[3] = q[0]*q_err[3] + q[1]*q_err[2] - q[2]*q_err[1] + q[3]*q_err[0];
+	
+	q_norm = sqrt(q[0]*q[0] + q[1]*q[1] + q[2]*q[2] + q[3]*q[3]);
+	q[0] = q[0] / q_norm;
+	q[1] = q[1] / q_norm;
+	q[2] = q[2] / q_norm;
+	q[3] = q[3] / q_norm;
+	
+	roll = atan2( 2.0f*(q[0]*q[1]+q[2]*q[3]) , 1.0f-2.0f*(q[1]*q[1]+q[2]*q[2]) );
+	pitch = asin( 2.0f*(q[0]*q[2]-q[1]*q[3]) );
+	yaw = atan2( 2.0f*(q[0]*q[3]+q[1]*q[2]) , 1.0f-2.0f*(q[2]*q[2]+q[3]*q[3]) );
 }
 

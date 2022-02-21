@@ -109,7 +109,8 @@ void Gimbal_Control(void)
 			
 			Conversion();
 			MS_Attitude_Acconly();
-			MS_Attitude_GyroIntegral();
+//			MS_Attitude_GyroIntegral();
+			MS_Attitude_Mahony();
 			
 //			PID_run_FloatspdVolt(&Pitch_Angel_PID,0.0f,pitch);//角度环
 			PID_run_FloatspdVolt(&Pitch_Speed_PID,0.0f,GimbalGyro_y);//角速度环
