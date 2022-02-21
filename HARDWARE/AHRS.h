@@ -11,11 +11,14 @@ extern s16 Acc_x,Acc_y,Acc_z;
 extern s16 Gyro_x, Gyro_y, Gyro_z;
 extern float GimbalGyro_x,GimbalGyro_y,GimbalGyro_z;
 extern float pitch, roll, yaw;
+extern float pitch_acc, roll_acc, yaw_acc;
 extern float MPU6500_Temp;
 extern int8_t Gyro_Temp;
 
 void Conversion(void);
 void MS_Attitude(void);
 void MS_Attitude_Acconly(void);
+void MS_Attitude_GyroIntegral(void);
+void init_MS_Attitude(void);
 
 #endif

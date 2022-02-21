@@ -38,12 +38,12 @@ void Oscilloscope(void)
 		Debug_Data.data9  = Pitch_Speed_PID.PID_Out;
 		Debug_Data.data10 = Yaw_Speed_PID.PID_Out;
 		
-		Debug_Data.data11 = GimbalGyro_x;
-		Debug_Data.data12 = GimbalGyro_y;
-		Debug_Data.data13 = GimbalGyro_z;
-		Debug_Data.data14 = roll;
-		Debug_Data.data15 = pitch;
-		Debug_Data.data16 = yaw;
+		Debug_Data.data11 = roll * RAD2DEG;
+		Debug_Data.data12 = pitch * RAD2DEG;
+		Debug_Data.data13 = yaw * RAD2DEG;
+		Debug_Data.data14 = roll_acc * RAD2DEG;
+		Debug_Data.data15 = pitch_acc * RAD2DEG;
+		Debug_Data.data16 = yaw_acc * RAD2DEG;
 			
 	  get_decode_data[0] = 0x23;
 		memcpy(get_decode_data+1,&Debug_Data,sizeof(Debug_Data));
