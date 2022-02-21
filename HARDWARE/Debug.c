@@ -41,9 +41,9 @@ void Oscilloscope(void)
 		Debug_Data.data11 = GimbalGyro_x;
 		Debug_Data.data12 = GimbalGyro_y;
 		Debug_Data.data13 = GimbalGyro_z;
-		Debug_Data.data14 = 0;
-		Debug_Data.data15 = 0;
-		Debug_Data.data16 = 0;
+		Debug_Data.data14 = roll;
+		Debug_Data.data15 = pitch;
+		Debug_Data.data16 = yaw;
 			
 	  get_decode_data[0] = 0x23;
 		memcpy(get_decode_data+1,&Debug_Data,sizeof(Debug_Data));

@@ -108,6 +108,7 @@ void Gimbal_Control(void)
 			}
 			
 			Conversion();
+			MS_Attitude_Acconly();
 			
 //			PID_run_FloatspdVolt(&Pitch_Angel_PID,0.0f,pitch);//角度环
 			PID_run_FloatspdVolt(&Pitch_Speed_PID,0.0f,GimbalGyro_y);//角速度环
@@ -127,8 +128,10 @@ void Gimbal_Control(void)
 			
 			if(Yaw_Speed_PID.PID_Out > 0.3f)Yaw_Speed_PID.PID_Out = 0.3f; 
 			else if(Yaw_Speed_PID.PID_Out < -0.3f)Yaw_Speed_PID.PID_Out = -0.3f;
-//			Yaw_Speed_PID.PID_Out =0.0f;
-//			Roll_Speed_PID.PID_Out =0.0f;
+			
+			Pitch_Speed_PID.PID_Out = 0.0f;
+			Yaw_Speed_PID.PID_Out =0.0f;
+			Roll_Speed_PID.PID_Out =0.0f;
 			SendMotor(0);
 			//正常运行
 			MotorOut_PR(Get_Encoder.Angle_P*MotorPR_Radian,-Pitch_Speed_PID.PID_Out,0.0f);// Angle,Vq <= 0.5f,校准 Vd = 0.3f
@@ -205,7 +208,7 @@ void Gimbal_Control(void)
 				{
 					TimeOut_Count = 2000;
 					MotorOut_PR(0.0f,0.0f,0.0f);// Angle,Vq <= 0.5f,校准 Vd = 0.3f
-		      MotorOut_Y(0.0f,0.0f,0.0f);// Angle,Vq <= 0.3f,校准 Vd = 0.15f
+					MotorOut_Y(0.0f,0.0f,0.0f);// Angle,Vq <= 0.3f,校准 Vd = 0.15f
 				}
 			}
 		}
