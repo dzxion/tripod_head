@@ -71,6 +71,8 @@ extern PIDFloat_Obj Yaw_Speed_PID;
 extern PIDFloat_Obj TempHeating_PID;
 extern PIDFloat_Obj TempSpeed_PID;
 
+extern float pitch_encoder, roll_encoder, yaw_encoder;
+
 void Gimbal_Init(void);
 void Para_Init(void);
 

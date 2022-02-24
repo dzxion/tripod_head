@@ -40,9 +40,14 @@ void Conversion(void)
 	Gyro_y = -((ReadMPU6500[8]<<8)|ReadMPU6500[9]);//Y
 	Gyro_z = ((ReadMPU6500[10]<<8)|ReadMPU6500[11]);//Z
 	
-	GimbalGyro_x = (Gyro_x/32.8f) * DEG2RAD;	
-	GimbalGyro_y = (Gyro_y/32.8f) * DEG2RAD;	
-	GimbalGyro_z = (Gyro_z/32.8f) * DEG2RAD;	
+//	GimbalGyro_x = (Gyro_x/32.8f) * DEG2RAD;	
+//	GimbalGyro_y = (Gyro_y/32.8f) * DEG2RAD;	
+//	GimbalGyro_z = (Gyro_z/32.8f) * DEG2RAD;
+	
+	GimbalGyro_x = (Gyro_x/32.8f) ;	
+	GimbalGyro_y = (Gyro_y/32.8f) ;	
+	GimbalGyro_z = (Gyro_z/32.8f) ;
+	
 }
 
 void MS_Attitude_Acconly(void)
@@ -93,9 +98,9 @@ float sample_time_gyro = 0.0005f;
 float delta_angle[3] = {0.0f,0.0f,0.0f};
 void MS_Attitude_GyroIntegral(void)
 {
-	delta_angle[0] = GimbalGyro_x * sample_time_gyro;
-	delta_angle[1] = GimbalGyro_y * sample_time_gyro;
-	delta_angle[2] = GimbalGyro_z * sample_time_gyro;
+	delta_angle[0] = GimbalGyro_x * DEG2RAD * sample_time_gyro;
+	delta_angle[1] = GimbalGyro_y * DEG2RAD * sample_time_gyro;
+	delta_angle[2] = GimbalGyro_z * DEG2RAD * sample_time_gyro;
 	
 	float tqw=q[0];	float tqx=q[1];	float tqy=q[2];	float tqz=q[3];
 	q[0] += 0.5f * ( -tqx*delta_angle[0] - tqy*delta_angle[1] - tqz*delta_angle[2] );
@@ -117,9 +122,9 @@ void MS_Attitude_GyroIntegral(void)
 float Kp = 0.1f;
 void MS_Attitude_Mahony(void)
 {
-	delta_angle[0] = GimbalGyro_x * sample_time_gyro;
-	delta_angle[1] = GimbalGyro_y * sample_time_gyro;
-	delta_angle[2] = GimbalGyro_z * sample_time_gyro;
+	delta_angle[0] = GimbalGyro_x * DEG2RAD * sample_time_gyro;
+	delta_angle[1] = GimbalGyro_y * DEG2RAD * sample_time_gyro;
+	delta_angle[2] = GimbalGyro_z * DEG2RAD * sample_time_gyro;
 	
 	float tqw=q[0];	float tqx=q[1];	float tqy=q[2];	float tqz=q[3];
 	q[0] += 0.5f * ( -tqx*delta_angle[0] - tqy*delta_angle[1] - tqz*delta_angle[2] );
