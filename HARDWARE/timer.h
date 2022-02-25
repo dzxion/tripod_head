@@ -25,7 +25,8 @@ void TIM15_PWM_Init(u16 arr,u16 psc);
 void TIM4_Int_Init(u16 arr,u16 psc);
 void TIM8_Cap_Init(u16 arr, u16 psc);
 
-
+extern u16 duty_data;
+extern u16 duty_data_Y;
 extern u8 TIM4_Flag;//定时器500us标志
 
 #endif

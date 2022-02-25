@@ -191,7 +191,7 @@ void TIM1_BRK_TIM15_IRQHandler(void)
 		duty = TIM_GetCapture2(TIM15); 				//采集占空比		
 		period	=	TIM_GetCapture1(TIM15);     //采集周期
 		duty_data_Y = (u16)(514.0f*duty/period-1.0f);
-		Get_Encoder.Angle_Y = 0.703125f * ((u16)(duty_data_Y + 170)%512);
+		Get_Encoder.Angle_Y = 0.703125f * ((u16)(duty_data_Y + 102)%512);
 	}
 	TIM_ClearITPendingBit(TIM15, TIM_IT_CC1); //清除中断标志位
 }

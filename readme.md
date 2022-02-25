@@ -8,16 +8,12 @@ Gyro 量程 1000deg/s 灵敏度 32.8
 imu更新频率 2000hz
 GimbalGyro_x 用于控制的角速度 deg/s
 
+芯片外设：
 使用串口3进行roll-yaw板和pitch板的通信
-
 使用串口1进行发送调试数据
 
-控制频率 2000hz 0.5ms 输出一次控制
-
-控制方向：
-Pitch_Speed_PID - 
-Roll_Speed_PID + 
-Yaw_Speed_PID +
+控制
+频率： 2000hz 0.5ms 输出一次控制
 
 pitch板：
 1.串口通信

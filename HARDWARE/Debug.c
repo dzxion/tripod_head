@@ -26,9 +26,9 @@ void Oscilloscope(void)
 	if(Oldman_i > 10)
 	{
 		Oldman_i = 0;
-		Debug_Data.data1  = Acc_x;
-		Debug_Data.data2  = Acc_y;		
-		Debug_Data.data3  = Acc_z;
+		Debug_Data.data1  = Roll_Speed_PID.PID_Out;
+		Debug_Data.data2  = Pitch_Speed_PID.PID_Out;		
+		Debug_Data.data3  = Yaw_Speed_PID.PID_Out;
 		Debug_Data.data4  = MPU6500_Temp;
 		Debug_Data.data5  = Gyro_x;
 		

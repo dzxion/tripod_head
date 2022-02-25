@@ -14,7 +14,7 @@ s16 MPU6500_raw;
 float  MPU6500_Temp;
 int8_t Gyro_Temp = 0;
 
-void Conversion(void)
+void IMU_Update(void)
 {
 	Read_MPU6500(ReadMPU6500);
 	//срио╨С

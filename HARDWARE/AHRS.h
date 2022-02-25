@@ -15,7 +15,7 @@ extern float pitch_acc, roll_acc, yaw_acc;
 extern float MPU6500_Temp;
 extern int8_t Gyro_Temp;
 
-void Conversion(void);
+void IMU_Update(void);
 void MS_Attitude_Mahony(void);
 void MS_Attitude_Acconly(void);
 void MS_Attitude_GyroIntegral(void);
