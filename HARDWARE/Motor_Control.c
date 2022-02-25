@@ -65,15 +65,15 @@ void Task10ms(void)
 }
 
 float pitch_encoder = 0.0f, roll_encoder = 0.0f, yaw_encoder = 0.0f;
-void motor_project(void)
+void cal_encoder_angle(void)
 {
 	if( Get_Encoder.Angle_R > 180 )
 	{
-		roll_encoder = Get_Encoder.Angle_R - 360;
+		roll_encoder = (Get_Encoder.Angle_R - 360) * DEG2RAD;
 	}
 	else
 	{
-		roll_encoder = Get_Encoder.Angle_R;
+		roll_encoder = Get_Encoder.Angle_R * DEG2RAD;
 	}
 	
 	float temp_pitch_encoder = Get_Encoder.Angle_P - 45;
@@ -81,7 +81,7 @@ void motor_project(void)
 	{
 		temp_pitch_encoder = temp_pitch_encoder - 360;
 	}
-	pitch_encoder = -temp_pitch_encoder;
+	pitch_encoder = -temp_pitch_encoder * DEG2RAD;
 		
 }
 
@@ -132,7 +132,7 @@ void Gimbal_Control(void)
 			MS_Attitude_Acconly();
 //			MS_Attitude_GyroIntegral();
 			MS_Attitude_Mahony();
-			motor_project();
+			cal_encoder_angle();
 			
 //			PID_run_FloatspdVolt(&Pitch_Angel_PID,0.0f,pitch);//角度环
 			PID_run_FloatspdVolt(&Pitch_Speed_PID,0.0f,GimbalGyro_y);//角速度环
@@ -144,9 +144,9 @@ void Gimbal_Control(void)
 //			PID_run_FloatspdVolt(&Yaw_Angel_PID,0.0f,yaw);									
 			PID_run_FloatspdVolt(&Yaw_Speed_PID,0.0f,GimbalGyro_z);
 			
-//			Pitch_Speed_PID.PID_Out = 0.0f;
-//			Roll_Speed_PID.PID_Out = 0.0f;
-//			Yaw_Speed_PID.PID_Out = 0.0f;
+			Pitch_Speed_PID.PID_Out = 0.0f;
+			Roll_Speed_PID.PID_Out = 0.0f;
+			Yaw_Speed_PID.PID_Out = 0.0f;
 			
 			if(Pitch_Speed_PID.PID_Out > 0.5f)Pitch_Speed_PID.PID_Out = 0.5f; 
 			else if(Pitch_Speed_PID.PID_Out < -0.5f)Pitch_Speed_PID.PID_Out = -0.5f;

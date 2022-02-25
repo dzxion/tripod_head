@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\Temp.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\Temp.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Thu Feb 24 15:16:44 2022
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Fri Feb 25 11:48:28 2022
 <BR><P>
 <H3>Maximum Stack Usage =        376 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -746,11 +746,11 @@ Global Symbols
 
 <P><STRONG><a name="[85]"></a>GPIO_ResetBits</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, stm32f30x_gpio.o(i.GPIO_ResetBits))
 <BR><BR>[Called By]<UL><LI><a href="#[94]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gpio_config
-<LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;R_LED_Status
-<LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;G_LED_Status
 <LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Read_MPU6500
 <LI><a href="#[ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MPU6500_Write_Reg
 <LI><a href="#[ac]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MPU6500_Read_Reg
+<LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;R_LED_Status
+<LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;G_LED_Status
 </UL>
 
 <P><STRONG><a name="[84]"></a>GPIO_SetBits</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, stm32f30x_gpio.o(i.GPIO_SetBits))
@@ -758,11 +758,11 @@ Global Symbols
 <LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LED_Init
 <LI><a href="#[94]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gpio_config
 <LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gimbal_Init
-<LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;R_LED_Status
-<LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;G_LED_Status
 <LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Read_MPU6500
 <LI><a href="#[ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MPU6500_Write_Reg
 <LI><a href="#[ac]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MPU6500_Read_Reg
+<LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;R_LED_Status
+<LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;G_LED_Status
 </UL>
 
 <P><STRONG><a name="[c7]"></a>GPIO_StructInit</STRONG> (Thumb, 22 bytes, Stack size 0 bytes, stm32f30x_gpio.o(i.GPIO_StructInit))
@@ -779,22 +779,22 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gimbal_Control
 </UL>
 
-<P><STRONG><a name="[86]"></a>Gimbal_Control</STRONG> (Thumb, 858 bytes, Stack size 16 bytes, motor_control.o(i.Gimbal_Control))
+<P><STRONG><a name="[86]"></a>Gimbal_Control</STRONG> (Thumb, 902 bytes, Stack size 16 bytes, motor_control.o(i.Gimbal_Control))
 <BR><BR>[Stack]<UL><LI>Max Depth = 376<LI>Call Chain = Gimbal_Control &rArr; MS_Attitude_Mahony &rArr; __hardfp_sin &rArr; __ieee754_rem_pio2 &rArr; __aeabi_dsub &rArr; __aeabi_dadd &rArr; _double_epilogue &rArr; _double_round
 </UL>
 <BR>[Calls]<UL><LI><a href="#[8a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PID_run_FloatspdVolt (via Veneer)
-<LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;R_LED_Status
-<LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;G_LED_Status
 <LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART3_SendDataDMA
 <LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_us
 <LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MotorOut_Y (via Veneer)
 <LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MotorOut_PR (via Veneer)
-<LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;motor_project
+<LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cal_encoder_angle
 <LI><a href="#[8b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SendMotor
 <LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MS_Attitude_Mahony
 <LI><a href="#[87]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MS_Attitude_Acconly
 <LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Conversion
 <LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Oscilloscope
+<LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;R_LED_Status
+<LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;G_LED_Status
 </UL>
 <BR>[Called By]<UL><LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
@@ -883,10 +883,10 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = MPU6500_Init &rArr; MPU6500_Write_Reg &rArr; SPI3_ReadWriteByte
 </UL>
 <BR>[Calls]<UL><LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
-<LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;R_LED_Status
 <LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_us
 <LI><a href="#[ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MPU6500_Write_Reg
 <LI><a href="#[ac]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MPU6500_Read_Reg
+<LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;R_LED_Status
 </UL>
 <BR>[Called By]<UL><LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPI3_Init
 </UL>
@@ -914,9 +914,9 @@ Global Symbols
 <P><STRONG><a name="[87]"></a>MS_Attitude_Acconly</STRONG> (Thumb, 260 bytes, Stack size 48 bytes, ahrs.o(i.MS_Attitude_Acconly))
 <BR><BR>[Stack]<UL><LI>Max Depth = 264<LI>Call Chain = MS_Attitude_Acconly &rArr; __hardfp_atan2 &rArr; atan &rArr; __hardfp_atan &rArr; __kernel_poly &rArr; __aeabi_dmul &rArr; _double_epilogue &rArr; _double_round
 </UL>
-<BR>[Calls]<UL><LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_i2d
-<LI><a href="#[b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_f2d
+<BR>[Calls]<UL><LI><a href="#[b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_f2d
 <LI><a href="#[b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_d2f
+<LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_i2d
 <LI><a href="#[af]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_sqrt
 <LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_atan2
 <LI><a href="#[b2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_asin
@@ -927,9 +927,9 @@ Global Symbols
 <P><STRONG><a name="[88]"></a>MS_Attitude_Mahony</STRONG> (Thumb, 1698 bytes, Stack size 120 bytes, ahrs.o(i.MS_Attitude_Mahony))
 <BR><BR>[Stack]<UL><LI>Max Depth = 360<LI>Call Chain = MS_Attitude_Mahony &rArr; __hardfp_sin &rArr; __ieee754_rem_pio2 &rArr; __aeabi_dsub &rArr; __aeabi_dadd &rArr; _double_epilogue &rArr; _double_round
 </UL>
-<BR>[Calls]<UL><LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_i2d
-<LI><a href="#[b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_f2d
+<BR>[Calls]<UL><LI><a href="#[b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_f2d
 <LI><a href="#[b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_d2f
+<LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_i2d
 <LI><a href="#[af]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_sqrt
 <LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_sin
 <LI><a href="#[b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_cos
@@ -958,7 +958,7 @@ Global Symbols
 <LI><a href="#[a0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gpio_Exti
 </UL>
 
-<P><STRONG><a name="[8d]"></a>Oscilloscope</STRONG> (Thumb, 382 bytes, Stack size 8 bytes, debug.o(i.Oscilloscope))
+<P><STRONG><a name="[8d]"></a>Oscilloscope</STRONG> (Thumb, 398 bytes, Stack size 8 bytes, debug.o(i.Oscilloscope))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = Oscilloscope &rArr; UART1_SendDataDMA
 </UL>
 <BR>[Calls]<UL><LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART1_SendDataDMA
@@ -1877,6 +1877,10 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_atan2
 </UL>
 
+<P><STRONG><a name="[89]"></a>cal_encoder_angle</STRONG> (Thumb, 132 bytes, Stack size 0 bytes, motor_control.o(i.cal_encoder_angle))
+<BR><BR>[Called By]<UL><LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gimbal_Control
+</UL>
+
 <P><STRONG><a name="[fc]"></a>delay_init</STRONG> (Thumb, 52 bytes, Stack size 8 bytes, delay.o(i.delay_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = delay_init
 </UL>
@@ -1910,9 +1914,9 @@ Global Symbols
 <P><STRONG><a name="[fe]"></a>init_MS_Attitude</STRONG> (Thumb, 1150 bytes, Stack size 72 bytes, ahrs.o(i.init_MS_Attitude))
 <BR><BR>[Stack]<UL><LI>Max Depth = 312<LI>Call Chain = init_MS_Attitude &rArr; __hardfp_sin &rArr; __ieee754_rem_pio2 &rArr; __aeabi_dsub &rArr; __aeabi_dadd &rArr; _double_epilogue &rArr; _double_round
 </UL>
-<BR>[Calls]<UL><LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_i2d
-<LI><a href="#[b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_f2d
+<BR>[Calls]<UL><LI><a href="#[b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_f2d
 <LI><a href="#[b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_d2f
+<LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_i2d
 <LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Read_MPU6500
 <LI><a href="#[af]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_sqrt
 <LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_sin
@@ -1938,10 +1942,6 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[74]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ComProtocol
 </UL>
 
-<P><STRONG><a name="[89]"></a>motor_project</STRONG> (Thumb, 108 bytes, Stack size 0 bytes, motor_control.o(i.motor_project))
-<BR><BR>[Called By]<UL><LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gimbal_Control
-</UL>
-
 <P><STRONG><a name="[ee]"></a>sqrt</STRONG> (Thumb, 110 bytes, Stack size 32 bytes, sqrt.o(i.sqrt))
 <BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = sqrt &rArr; _dsqrt &rArr; _double_round
 </UL>
@@ -1954,6 +1954,8 @@ Global Symbols
 <P><STRONG><a name="[8a]"></a>PID_run_FloatspdVolt</STRONG> (Thumb, 216 bytes, Stack size 0 bytes, app.o(ramfunc))
 <BR><BR>[Called By]<UL><LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gimbal_Control (via Veneer)
 </UL>
+
+<P><STRONG><a name="[11c]"></a>PID_run</STRONG> (Thumb, 204 bytes, Stack size 0 bytes, app.o(ramfunc), UNUSED)
 
 <P><STRONG><a name="[24]"></a>TIM1_UP_TIM16_IRQHandler</STRONG> (Thumb, 22 bytes, Stack size 8 bytes, motor_tim.o(ramfunc))
 <BR><BR>[Stack]<UL><LI>Max Depth = 20<LI>Call Chain = TIM1_UP_TIM16_IRQHandler &rArr; TIM_GetITStatus

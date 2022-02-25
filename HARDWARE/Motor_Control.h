@@ -46,6 +46,8 @@ typedef struct
 extern Send_Motor_t Send_Motor;
 extern Get_Motor_t Get_Motor;
 
+extern float pitch_encoder, roll_encoder, yaw_encoder;
+
 void Gimbal_Control(void);
 
 #endif

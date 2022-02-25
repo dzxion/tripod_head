@@ -34,8 +34,8 @@ void Oscilloscope(void)
 		
 		Debug_Data.data6  = Gyro_y;
 		Debug_Data.data7  = Gyro_z;
-		Debug_Data.data8  = roll_encoder;
-		Debug_Data.data9  = pitch_encoder;
+		Debug_Data.data8  = roll_encoder * RAD2DEG;
+		Debug_Data.data9  = pitch_encoder * RAD2DEG;
 		Debug_Data.data10 = Get_Encoder.Angle_Y;
 		
 		Debug_Data.data11 = roll * RAD2DEG;

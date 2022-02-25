@@ -235,3 +235,54 @@ STM32F303_RAMFUNC float PID_run_FloatspdVolt(PIDFloat_Obj* handle,float GivenAng
 	}
 	return handle->PID_Out;
 }
+
+STM32F303_RAMFUNC float PID_run(PIDFloat_Obj* handle,float Error_value)
+{
+	float P_Out;
+	
+	P_Out = Error_value * handle->Kp;
+	handle->I_Out += Error_value * handle->Ki;
+
+	if(P_Out < handle->P_Min)P_Out = handle->P_Min; 
+	else if(P_Out > handle->P_Max)P_Out = handle->P_Max;
+	
+	if(handle->I_Out < handle->I_Min)handle->I_Out = handle->I_Min;
+	else if(handle->I_Out > handle->I_Max)handle->I_Out = handle->I_Max;
+  	
+	handle->PID_Out = P_Out + handle->I_Out;
+	
+	if(handle->PID_Out > handle->outMax)
+	{
+    handle->PID_Out = handle->outMax;
+	}
+    else if(handle->PID_Out < handle->outMin)
+	{
+    handle->PID_Out = handle->outMin;
+	}
+	return handle->PID_Out;
+}
+
+void ctrl_angular_velocity(float target_angular_velocity_x,float target_angular_velocity_y,float target_angular_velocity_z,
+                           float current_angular_velocity_x,float current_angular_velocity_y,float current_angular_velocity_z)
+{
+	//计算角速度误差
+	float error_angular_velocity_body_x = target_angular_velocity_x - current_angular_velocity_x;
+	float error_angular_velocity_body_y = target_angular_velocity_y - current_angular_velocity_y;
+	float error_angular_velocity_body_z = target_angular_velocity_z - current_angular_velocity_z;
+	
+	//机体误差映射到三个电机上
+	float sin_roll, cos_roll;
+	float sin_pitch, cos_pitch;
+	sin_roll = sin(roll_encoder);cos_roll = cos(roll_encoder);
+	sin_pitch = sin(pitch_encoder);cos_pitch = cos(pitch_encoder);
+	float inv_cos_roll = 1.0f / cos_roll;
+	
+	float error_motor_speed_roll = cos_pitch * error_angular_velocity_body_x + sin_pitch * error_angular_velocity_body_z;
+	float error_motor_speed_pitch = error_angular_velocity_body_y + (sin_roll * sin_pitch * error_angular_velocity_body_x - sin_roll * cos_pitch * error_angular_velocity_body_z) * inv_cos_roll;
+	float error_motor_speed_yaw = (- sin_pitch * error_angular_velocity_body_x + cos_pitch * error_angular_velocity_body_z) * inv_cos_roll;
+	
+	//PID控制
+	PID_run(&Roll_Speed_PID, error_motor_speed_roll);
+	PID_run(&Pitch_Speed_PID, error_motor_speed_pitch);
+	PID_run(&Yaw_Speed_PID, error_motor_speed_yaw);
+}
