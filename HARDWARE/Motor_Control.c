@@ -137,20 +137,22 @@ void Gimbal_Control(void)
 			
 			// 控制解算
 			cal_encoder_angle();
-//			PID_run_FloatspdVolt(&Pitch_Angel_PID,0.0f,pitch);//角度环
-			PID_run_FloatspdVolt(&Pitch_Speed_PID,0.0f,GimbalGyro_y);//角速度环
 			
-//			PID_run_FloatspdVolt(&Roll_Angel_PID ,0.0f,roll);
-//			PID_run_FloatspdVolt(&Roll_Speed_PID,Roll_Angel_PID.PID_Out,GimbalGyro_x);
-			PID_run_FloatspdVolt(&Roll_Speed_PID,0.0f,GimbalGyro_x);
-						
-//			PID_run_FloatspdVolt(&Yaw_Angel_PID,0.0f,yaw);									
-			PID_run_FloatspdVolt(&Yaw_Speed_PID,0.0f,GimbalGyro_z);
+			ctrl_angular_velocity(0.0f,0.0f,0.0f,GimbalGyro_x,GimbalGyro_y,GimbalGyro_z);
+			
+////			PID_run_FloatspdVolt(&Pitch_Angel_PID,0.0f,pitch);//角度环
+//			PID_run_FloatspdVolt(&Pitch_Speed_PID,0.0f,GimbalGyro_y);//角速度环
+//			
+////			PID_run_FloatspdVolt(&Roll_Angel_PID ,0.0f,roll);
+//			PID_run_FloatspdVolt(&Roll_Speed_PID,0.0f,GimbalGyro_x);
+//						
+////			PID_run_FloatspdVolt(&Yaw_Angel_PID,0.0f,yaw);									
+//			PID_run_FloatspdVolt(&Yaw_Speed_PID,0.0f,GimbalGyro_z);
 			
 			// 控制输出
-			Pitch_Speed_PID.PID_Out = 0.0f;
-			Roll_Speed_PID.PID_Out = 0.0f;
-			Yaw_Speed_PID.PID_Out = 0.0f;
+//			Pitch_Speed_PID.PID_Out = 0.0f;
+//			Roll_Speed_PID.PID_Out = 0.0f;
+//			Yaw_Speed_PID.PID_Out = 0.0f;
 			
 			if(Pitch_Speed_PID.PID_Out > 0.5f)Pitch_Speed_PID.PID_Out = 0.5f; 
 			else if(Pitch_Speed_PID.PID_Out < -0.5f)Pitch_Speed_PID.PID_Out = -0.5f;
