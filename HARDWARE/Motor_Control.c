@@ -137,7 +137,6 @@ void Gimbal_Control(void)
 			
 			// 控制解算
 			cal_encoder_angle();
-			
 			ctrl_angular_velocity(0.0f,0.0f,0.0f,GimbalGyro_x,GimbalGyro_y,GimbalGyro_z);
 			
 ////			PID_run_FloatspdVolt(&Pitch_Angel_PID,0.0f,pitch);//角度环

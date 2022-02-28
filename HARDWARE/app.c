@@ -108,8 +108,8 @@ void PID_Para_Init(void)
 	Roll_Angel_PID.I_Out = 0.0f; 
 	Roll_Angel_PID.PID_Out = 0.0f;
 /*************************************************************/		
-	Roll_Speed_PID.Kp = 0.01f; //0.01
-	Roll_Speed_PID.Ki = 0.001f; 
+	Roll_Speed_PID.Kp = 0.0075f; //0.01
+	Roll_Speed_PID.Ki = 0.00075f; 
 	
 	Roll_Speed_PID.P_Min = -1.0f;
 	Roll_Speed_PID.P_Max =  1.0f;	
@@ -141,8 +141,8 @@ void PID_Para_Init(void)
 	Yaw_Angel_PID.I_Out = 0.0f; 
 	Yaw_Angel_PID.PID_Out = 0.0f;
 /*************************************************************/		
-	Yaw_Speed_PID.Kp = 0.01f; //0.01
-	Yaw_Speed_PID.Ki = 0.001f; 
+	Yaw_Speed_PID.Kp = 0.005f; //0.01
+	Yaw_Speed_PID.Ki = 0.0005f; 
 	
 	Yaw_Speed_PID.P_Min = -1.0f;
 	Yaw_Speed_PID.P_Max =  1.0f;	
