@@ -129,7 +129,7 @@ void Gimbal_Control(void)
 				system_time++;
 			}
 			
-			// 估计解算
+			// 观测解算
 			IMU_Update();
 			MS_Attitude_Acconly();
 //			MS_Attitude_GyroIntegral();

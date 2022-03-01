@@ -14,6 +14,7 @@ extern float pitch, roll, yaw;
 extern float pitch_acc, roll_acc, yaw_acc;
 extern float MPU6500_Temp;
 extern int8_t Gyro_Temp;
+extern float q[4];
 
 void IMU_Update(void);
 void MS_Attitude_Mahony(void);

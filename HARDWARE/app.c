@@ -286,3 +286,76 @@ void ctrl_angular_velocity(float target_angular_velocity_x,float target_angular_
 	PID_run(&Pitch_Speed_PID, error_motor_speed_pitch);
 	PID_run(&Yaw_Speed_PID, error_motor_speed_yaw);
 }
+
+float target_Roll = 0.0f, target_Pitch = 0.0f, target_Yaw = 0.0f;
+float Ps = 1.0f;
+void ctrl_Attitude(void)
+{
+	//获取当前四元数的Pitch Roll分量四元数
+	float current_quat_PR[4];
+//	float AirframeQuat[4] = {q[0],q[1],q[2],q[3]};
+	float Yaw = atan2( 2.0f*(q[0]*q[3]+q[1]*q[2]) , 1.0f-2.0f*(q[2]*q[2]+q[3]*q[3]) );
+	float half_sinYaw, half_cosYaw;
+	half_sinYaw = sin(0.5f*Yaw); half_cosYaw = cos(0.5f*Yaw);
+//	float YawQuat[4] = {half_cosYaw,0,0,-half_sinYaw};
+	
+	current_quat_PR[0] = q[0]*half_cosYaw + q[3]*half_sinYaw;
+	current_quat_PR[1] = q[1]*half_cosYaw + q[2]*half_sinYaw;
+	current_quat_PR[2] = q[2]*half_cosYaw - q[1]*half_sinYaw;
+	current_quat_PR[3] = q[3]*half_cosYaw - q[0]*half_sinYaw;
+	
+	float q_norm = sqrt(current_quat_PR[0]*current_quat_PR[0] + current_quat_PR[1]*current_quat_PR[1] + current_quat_PR[2]*current_quat_PR[2] + current_quat_PR[3]*current_quat_PR[3]);
+	current_quat_PR[0] = current_quat_PR[0] / q_norm;
+	current_quat_PR[1] = current_quat_PR[1] / q_norm;
+	current_quat_PR[2] = current_quat_PR[2] / q_norm;
+	current_quat_PR[3] = current_quat_PR[3] / q_norm;
+	
+	//使用目标角度构造目标四元数
+	float target_quat_PR[4];
+	float half_sinR, half_cosR;
+	half_sinR = sin(0.5f*target_Roll); half_cosR = cos(0.5f*target_Roll);
+	float half_sinP, half_cosP;
+	half_sinP = sin(0.5f*target_Pitch); half_cosP = cos(0.5f*target_Pitch);
+	
+	target_quat_PR[0] = half_cosR*half_cosP;
+	target_quat_PR[1] = half_cosP*half_sinR;
+	target_quat_PR[2] = half_cosR*half_sinP;
+	target_quat_PR[3] = -half_sinR*half_sinP;
+	
+	q_norm = sqrt(target_quat_PR[0]*target_quat_PR[0] + target_quat_PR[1]*target_quat_PR[1] + target_quat_PR[2]*target_quat_PR[2] + target_quat_PR[3]*target_quat_PR[3]);
+	target_quat_PR[0] = target_quat_PR[0] / q_norm;
+	target_quat_PR[1] = target_quat_PR[1] / q_norm;
+	target_quat_PR[2] = target_quat_PR[2] / q_norm;
+	target_quat_PR[3] = target_quat_PR[3] / q_norm;
+	
+	//计算误差四元数
+	float q_error[4];
+	q_error[0] = current_quat_PR[0]*target_quat_PR[0] + current_quat_PR[1]*target_quat_PR[1] + current_quat_PR[2]*target_quat_PR[2] + current_quat_PR[3]*target_quat_PR[3];
+	q_error[1] = current_quat_PR[0]*target_quat_PR[1] - current_quat_PR[1]*target_quat_PR[0] - current_quat_PR[2]*target_quat_PR[3] + current_quat_PR[3]*target_quat_PR[2];
+	q_error[2] = current_quat_PR[0]*target_quat_PR[2] - current_quat_PR[2]*target_quat_PR[0] + current_quat_PR[1]*target_quat_PR[3] - current_quat_PR[3]*target_quat_PR[1];
+	q_error[3] = current_quat_PR[0]*target_quat_PR[3] - current_quat_PR[1]*target_quat_PR[2] + current_quat_PR[2]*target_quat_PR[1] - current_quat_PR[3]*target_quat_PR[0];
+	
+	q_norm = sqrt(q_error[0]*q_error[0] + q_error[1]*q_error[1] + q_error[2]*q_error[2] + q_error[3]*q_error[3]);
+	q_error[0] = q_error[0] / q_norm;
+	q_error[1] = q_error[1] / q_norm;
+	q_error[2] = q_error[2] / q_norm;
+	q_error[3] = q_error[3] / q_norm;
+	
+	//计算误差旋转向量
+	float PR_rotation[3];
+	float theta = 2.0f* acos( q_error[0] );
+	if(theta > PI)
+		theta -= 2.0f*PI;
+	float sin_half_theta = sqrt( 1.0f - q_error[0]*q_error[0] );
+	float scale = theta / sin_half_theta;
+	PR_rotation[0] = q_error[1] * scale;
+	PR_rotation[1] = q_error[2] * scale;
+	PR_rotation[2] = q_error[3] * scale;
+	
+	float target_angular_rate[3];
+	target_angular_rate[0] = PR_rotation[0] * Ps;
+	target_angular_rate[1] = PR_rotation[1] * Ps;
+	target_angular_rate[2] = PR_rotation[2] * Ps;
+	
+	ctrl_angular_velocity(target_angular_rate[0],target_angular_rate[1],target_angular_rate[2],GimbalGyro_x,GimbalGyro_y,GimbalGyro_z);
+}

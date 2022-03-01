@@ -78,7 +78,7 @@ void Para_Init(void);
 
 void ctrl_angular_velocity(float target_angular_velocity_x,float target_angular_velocity_y,float target_angular_velocity_z,
 						   float current_angular_velocity_x,float current_angular_velocity_y,float current_angular_velocity_z);
-
+void ctrl_Attitude(void);
 STM32F303_RAMFUNC float PID_run_FloatspdVolt(PIDFloat_Obj* handle,float GivenAngle,float FeedbackAngle);
 
 	
