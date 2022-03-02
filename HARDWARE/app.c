@@ -353,9 +353,9 @@ void ctrl_Attitude(void)
 	PR_rotation[2] = q_error[3] * scale;
 	
 	float target_angular_rate[3];
-	target_angular_rate[0] = PR_rotation[0] * Ps;
-	target_angular_rate[1] = PR_rotation[1] * Ps;
-	target_angular_rate[2] = PR_rotation[2] * Ps;
+	target_angular_rate[0] = PR_rotation[0] * Ps * RAD2DEG;
+	target_angular_rate[1] = PR_rotation[1] * Ps * RAD2DEG;
+	target_angular_rate[2] = PR_rotation[2] * Ps * RAD2DEG;
 	
 	ctrl_angular_velocity(target_angular_rate[0],target_angular_rate[1],target_angular_rate[2],GimbalGyro_x,GimbalGyro_y,GimbalGyro_z);
 }
