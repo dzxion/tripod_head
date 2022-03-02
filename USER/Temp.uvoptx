@@ -168,82 +168,62 @@
         <Ww>
           <count>2</count>
           <WinNumber>1</WinNumber>
-          <ItemText>TEST</ItemText>
+          <ItemText>GimbalGyro_x</ItemText>
         </Ww>
         <Ww>
           <count>3</count>
           <WinNumber>1</WinNumber>
-          <ItemText>test_buff</ItemText>
+          <ItemText>\\Temp\../HARDWARE/AHRS.c\GimbalGyro_y</ItemText>
         </Ww>
         <Ww>
           <count>4</count>
           <WinNumber>1</WinNumber>
-          <ItemText>TEST2</ItemText>
+          <ItemText>\\Temp\../HARDWARE/AHRS.c\GimbalGyro_z</ItemText>
         </Ww>
         <Ww>
           <count>5</count>
           <WinNumber>1</WinNumber>
-          <ItemText>test_len1,0x0A</ItemText>
+          <ItemText>Roll_Angel_PID.PID_Out</ItemText>
         </Ww>
         <Ww>
           <count>6</count>
           <WinNumber>1</WinNumber>
-          <ItemText>test_len2,0x0A</ItemText>
+          <ItemText>Pitch_Angel_PID.PID_Out</ItemText>
         </Ww>
         <Ww>
           <count>7</count>
           <WinNumber>1</WinNumber>
-          <ItemText>etet1,0x10</ItemText>
+          <ItemText>Yaw_Angel_PID.PID_Out</ItemText>
         </Ww>
         <Ww>
           <count>8</count>
           <WinNumber>1</WinNumber>
-          <ItemText>GimbalGyro_x</ItemText>
+          <ItemText>Roll_Speed_PID.PID_Out</ItemText>
         </Ww>
         <Ww>
           <count>9</count>
           <WinNumber>1</WinNumber>
-          <ItemText>duty_data,0x0A</ItemText>
+          <ItemText>Pitch_Speed_PID.PID_Out</ItemText>
         </Ww>
         <Ww>
           <count>10</count>
           <WinNumber>1</WinNumber>
-          <ItemText>duty_data_Y,0x0A</ItemText>
+          <ItemText>Yaw_Speed_PID.PID_Out</ItemText>
         </Ww>
         <Ww>
           <count>11</count>
           <WinNumber>1</WinNumber>
-          <ItemText>GimbalGyro_x</ItemText>
+          <ItemText>roll</ItemText>
         </Ww>
         <Ww>
           <count>12</count>
           <WinNumber>1</WinNumber>
-          <ItemText>\\Temp\../HARDWARE/AHRS.c\GimbalGyro_y</ItemText>
+          <ItemText>pitch</ItemText>
         </Ww>
         <Ww>
           <count>13</count>
           <WinNumber>1</WinNumber>
-          <ItemText>\\Temp\../HARDWARE/AHRS.c\GimbalGyro_z</ItemText>
-        </Ww>
-        <Ww>
-          <count>14</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>Roll_Speed_PID.PID_Out</ItemText>
-        </Ww>
-        <Ww>
-          <count>15</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>Roll_Angel_PID.PID_Out</ItemText>
-        </Ww>
-        <Ww>
-          <count>16</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>Roll_Speed_PID</ItemText>
-        </Ww>
-        <Ww>
-          <count>17</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>cmd_value</ItemText>
+          <ItemText>yaw</ItemText>
         </Ww>
       </WatchWindow1>
       <MemoryWindow1>

@@ -1,4 +1,5 @@
 #include "app.h"
+#include <float.h>
 
 PIDFloat_Obj Pitch_Angel_PID;
 PIDFloat_Obj Pitch_Speed_PID;
@@ -60,7 +61,7 @@ void Gimbal_Init(void)
 void PID_Para_Init(void)
 {
 /*************************************************************/	
-	Pitch_Angel_PID.Kp = 0.0f;//2.0
+	Pitch_Angel_PID.Kp = 2.0f;//2.0
 	Pitch_Angel_PID.Ki = 0.0f; //0.25 
 	
 	Pitch_Angel_PID.P_Min = -DutyMax;
@@ -93,7 +94,7 @@ void PID_Para_Init(void)
 
 
 /*************************************************************/	
-	Roll_Angel_PID.Kp = 0.0f;//2.0
+	Roll_Angel_PID.Kp = 2.0f;//2.0
 	Roll_Angel_PID.Ki = 0.0f;  //0.25
 	
 	Roll_Angel_PID.P_Min = -DutyMax;
@@ -126,7 +127,7 @@ void PID_Para_Init(void)
 
 
 /*************************************************************/	
-	Yaw_Angel_PID.Kp = 0.0f;//1.0
+	Yaw_Angel_PID.Kp = 2.0f;//1.0
 	Yaw_Angel_PID.Ki = 0.0f; //0.125 
 	
 	Yaw_Angel_PID.P_Min = -DutyMax;
@@ -347,15 +348,25 @@ void ctrl_Attitude(void)
 	if(theta > PI)
 		theta -= 2.0f*PI;
 	float sin_half_theta = sqrt( 1.0f - q_error[0]*q_error[0] );
-	float scale = theta / sin_half_theta;
-	PR_rotation[0] = q_error[1] * scale;
-	PR_rotation[1] = q_error[2] * scale;
-	PR_rotation[2] = q_error[3] * scale;
+//	float scale = theta / sin_half_theta;
+	float scale;
+	if (fabsf(sin_half_theta) < FLT_EPSILON)
+		scale = 0.5;
+	else
+		scale = theta / sin_half_theta;
+	PR_rotation[0] = q_error[1] * scale * RAD2DEG;
+	PR_rotation[1] = q_error[2] * scale * RAD2DEG;
+	PR_rotation[2] = q_error[3] * scale * RAD2DEG;
 	
-	float target_angular_rate[3];
-	target_angular_rate[0] = PR_rotation[0] * Ps * RAD2DEG;
-	target_angular_rate[1] = PR_rotation[1] * Ps * RAD2DEG;
-	target_angular_rate[2] = PR_rotation[2] * Ps * RAD2DEG;
+//	float target_angular_rate[3];
+//	target_angular_rate[0] = PR_rotation[0] * Ps * RAD2DEG;
+//	target_angular_rate[1] = PR_rotation[1] * Ps * RAD2DEG;
+//	target_angular_rate[2] = PR_rotation[2] * Ps * RAD2DEG;
+//	
+//	ctrl_angular_velocity(target_angular_rate[0],target_angular_rate[1],target_angular_rate[2],GimbalGyro_x,GimbalGyro_y,GimbalGyro_z);
 	
-	ctrl_angular_velocity(target_angular_rate[0],target_angular_rate[1],target_angular_rate[2],GimbalGyro_x,GimbalGyro_y,GimbalGyro_z);
+	//PID¿ØÖÆ
+	PID_run(&Roll_Angel_PID, PR_rotation[0]);
+	PID_run(&Pitch_Angel_PID, PR_rotation[1]);
+	PID_run(&Yaw_Angel_PID, PR_rotation[2]);
 }

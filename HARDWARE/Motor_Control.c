@@ -129,17 +129,20 @@ void Gimbal_Control(void)
 				system_time++;
 			}
 			
-			// 观测解算
+			// 传感器数据更新
 			IMU_Update();
+			// 加速度解算的姿态用作参考
 			MS_Attitude_Acconly();
 //			MS_Attitude_GyroIntegral();
+			// 姿态解算
 			MS_Attitude_Mahony();
 			
-			// 控制解算
+			// 编码器角度计算
 			cal_encoder_angle();
+			// 姿态环
 			ctrl_Attitude();
-			
-//			ctrl_angular_velocity(0.0f,0.0f,0.0f,GimbalGyro_x,GimbalGyro_y,GimbalGyro_z);
+			// 角速度环
+			ctrl_angular_velocity(Roll_Angel_PID.PID_Out,Pitch_Angel_PID.PID_Out,Yaw_Angel_PID.PID_Out,GimbalGyro_x,GimbalGyro_y,GimbalGyro_z);
 			
 ////			PID_run_FloatspdVolt(&Pitch_Angel_PID,0.0f,pitch);//角度环
 //			PID_run_FloatspdVolt(&Pitch_Speed_PID,0.0f,GimbalGyro_y);//角速度环
