@@ -150,7 +150,7 @@ void Gimbal_Control(void)
 			// 姿态环
 			ctrl_Attitude();
 			// 角速度环
-			ctrl_angular_velocity(Roll_Angel_PID.PID_Out,Pitch_Angel_PID.PID_Out,Yaw_Angel_PID.PID_Out,GimbalGyro_x,GimbalGyro_y,GimbalGyro_z);
+			ctrl_angular_velocity(target_angular_rate_body[0],target_angular_rate_body[1],target_angular_rate_body[2],GimbalGyro_x,GimbalGyro_y,GimbalGyro_z);
 			
 ////			PID_run_FloatspdVolt(&Pitch_Angel_PID,0.0f,pitch);//角度环
 //			PID_run_FloatspdVolt(&Pitch_Speed_PID,0.0f,GimbalGyro_y);//角速度环

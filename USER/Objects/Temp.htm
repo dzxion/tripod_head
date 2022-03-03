@@ -3,9 +3,9 @@
 <title>Static Call Graph - [.\Objects\Temp.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\Temp.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Thu Mar 03 14:25:26 2022
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Thu Mar 03 16:00:36 2022
 <BR><P>
-<H3>Maximum Stack Usage =        392 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
+<H3>Maximum Stack Usage =        464 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
 main &rArr; Gimbal_Control &rArr; ctrl_Attitude &rArr; __hardfp_sin &rArr; __ieee754_rem_pio2 &rArr; __aeabi_dmul &rArr; _double_epilogue &rArr; _double_round
 <P>
@@ -781,8 +781,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gimbal_Control
 </UL>
 
-<P><STRONG><a name="[84]"></a>Gimbal_Control</STRONG> (Thumb, 1112 bytes, Stack size 16 bytes, motor_control.o(i.Gimbal_Control))
-<BR><BR>[Stack]<UL><LI>Max Depth = 392<LI>Call Chain = Gimbal_Control &rArr; ctrl_Attitude &rArr; __hardfp_sin &rArr; __ieee754_rem_pio2 &rArr; __aeabi_dmul &rArr; _double_epilogue &rArr; _double_round
+<P><STRONG><a name="[84]"></a>Gimbal_Control</STRONG> (Thumb, 1100 bytes, Stack size 16 bytes, motor_control.o(i.Gimbal_Control))
+<BR><BR>[Stack]<UL><LI>Max Depth = 464<LI>Call Chain = Gimbal_Control &rArr; ctrl_Attitude &rArr; __hardfp_sin &rArr; __ieee754_rem_pio2 &rArr; __aeabi_dmul &rArr; _double_epilogue &rArr; _double_round
 </UL>
 <BR>[Calls]<UL><LI><a href="#[8a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ctrl_angular_velocity
 <LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ctrl_Attitude
@@ -1919,8 +1919,8 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gimbal_Control
 </UL>
 
-<P><STRONG><a name="[89]"></a>ctrl_Attitude</STRONG> (Thumb, 1542 bytes, Stack size 136 bytes, app.o(i.ctrl_Attitude))
-<BR><BR>[Stack]<UL><LI>Max Depth = 376<LI>Call Chain = ctrl_Attitude &rArr; __hardfp_sin &rArr; __ieee754_rem_pio2 &rArr; __aeabi_dmul &rArr; _double_epilogue &rArr; _double_round
+<P><STRONG><a name="[89]"></a>ctrl_Attitude</STRONG> (Thumb, 2030 bytes, Stack size 208 bytes, app.o(i.ctrl_Attitude))
+<BR><BR>[Stack]<UL><LI>Max Depth = 448<LI>Call Chain = ctrl_Attitude &rArr; __hardfp_sin &rArr; __ieee754_rem_pio2 &rArr; __aeabi_dmul &rArr; _double_epilogue &rArr; _double_round
 </UL>
 <BR>[Calls]<UL><LI><a href="#[b2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_f2d
 <LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dmul
@@ -1994,7 +1994,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[4d]"></a>main</STRONG> (Thumb, 98 bytes, Stack size 0 bytes, main.o(i.main))
-<BR><BR>[Stack]<UL><LI>Max Depth = 392<LI>Call Chain = main &rArr; Gimbal_Control &rArr; ctrl_Attitude &rArr; __hardfp_sin &rArr; __ieee754_rem_pio2 &rArr; __aeabi_dmul &rArr; _double_epilogue &rArr; _double_round
+<BR><BR>[Stack]<UL><LI>Max Depth = 464<LI>Call Chain = main &rArr; Gimbal_Control &rArr; ctrl_Attitude &rArr; __hardfp_sin &rArr; __ieee754_rem_pio2 &rArr; __aeabi_dmul &rArr; _double_epilogue &rArr; _double_round
 </UL>
 <BR>[Calls]<UL><LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init_MS_Attitude
 <LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms

@@ -289,6 +289,7 @@ void ctrl_angular_velocity(float target_angular_velocity_x,float target_angular_
 }
 
 float target_Roll = 0.0f, target_Pitch = 0.0f, target_Yaw = 0.0f;
+float target_angular_rate_body[3];
 float Ps = 1.0f;
 void ctrl_Attitude(void)
 {
@@ -311,6 +312,24 @@ void ctrl_Attitude(void)
 	current_quat_PR[2] = current_quat_PR[2] / q_norm;
 	current_quat_PR[3] = current_quat_PR[3] / q_norm;
 	
+	//计算旋转矩阵
+	current_quat_PR[1] = -current_quat_PR[1];current_quat_PR[2] = -current_quat_PR[2];current_quat_PR[3] = -current_quat_PR[3];
+	float Rotation_Matrix[3][3];
+	float qw2 = current_quat_PR[0] * current_quat_PR[0];
+	float qx2 = current_quat_PR[1] * current_quat_PR[1];
+	float qy2 = current_quat_PR[2] * current_quat_PR[2];
+	float qz2 = current_quat_PR[3] * current_quat_PR[3];
+	float qwx = current_quat_PR[0] * current_quat_PR[1];
+	float qwy = current_quat_PR[0] * current_quat_PR[2];
+	float qwz = current_quat_PR[0] * current_quat_PR[3];
+	float qxy = current_quat_PR[1] * current_quat_PR[2];
+	float qxz = current_quat_PR[1] * current_quat_PR[3];
+	float qyz = current_quat_PR[2] * current_quat_PR[3];
+	Rotation_Matrix[0][0]=qw2+qx2-qy2-qz2;	Rotation_Matrix[0][1]=2.0f*(qxy-qwz);	Rotation_Matrix[0][2]=2.0f*(qwy+qxz);
+	Rotation_Matrix[1][0]=2.0f*(qwz+qxy);	Rotation_Matrix[1][1]=qw2-qx2+qy2-qz2;	Rotation_Matrix[1][2]=2.0f*(qyz-qwx);
+	Rotation_Matrix[2][0]=2.0f*(qxz-qwy);	Rotation_Matrix[2][1]=2.0f*(qwx+qyz);	Rotation_Matrix[2][2]=qw2-qx2-qy2+qz2;
+	current_quat_PR[1] = -current_quat_PR[1];current_quat_PR[2] = -current_quat_PR[2];current_quat_PR[3] = -current_quat_PR[3];
+	
 	//使用目标角度构造目标四元数
 	float target_quat_PR[4];
 	float half_sinR, half_cosR;
@@ -331,10 +350,18 @@ void ctrl_Attitude(void)
 	
 	//计算误差四元数
 	float q_error[4];
+	
+	//机体系
+//	q_error[0] = current_quat_PR[0]*target_quat_PR[0] + current_quat_PR[1]*target_quat_PR[1] + current_quat_PR[2]*target_quat_PR[2] + current_quat_PR[3]*target_quat_PR[3];
+//	q_error[1] = current_quat_PR[0]*target_quat_PR[1] - current_quat_PR[1]*target_quat_PR[0] - current_quat_PR[2]*target_quat_PR[3] + current_quat_PR[3]*target_quat_PR[2];
+//	q_error[2] = current_quat_PR[0]*target_quat_PR[2] - current_quat_PR[2]*target_quat_PR[0] + current_quat_PR[1]*target_quat_PR[3] - current_quat_PR[3]*target_quat_PR[1];
+//	q_error[3] = current_quat_PR[0]*target_quat_PR[3] - current_quat_PR[1]*target_quat_PR[2] + current_quat_PR[2]*target_quat_PR[1] - current_quat_PR[3]*target_quat_PR[0];
+	
+	//世界系
 	q_error[0] = current_quat_PR[0]*target_quat_PR[0] + current_quat_PR[1]*target_quat_PR[1] + current_quat_PR[2]*target_quat_PR[2] + current_quat_PR[3]*target_quat_PR[3];
-	q_error[1] = current_quat_PR[0]*target_quat_PR[1] - current_quat_PR[1]*target_quat_PR[0] - current_quat_PR[2]*target_quat_PR[3] + current_quat_PR[3]*target_quat_PR[2];
-	q_error[2] = current_quat_PR[0]*target_quat_PR[2] - current_quat_PR[2]*target_quat_PR[0] + current_quat_PR[1]*target_quat_PR[3] - current_quat_PR[3]*target_quat_PR[1];
-	q_error[3] = current_quat_PR[0]*target_quat_PR[3] - current_quat_PR[1]*target_quat_PR[2] + current_quat_PR[2]*target_quat_PR[1] - current_quat_PR[3]*target_quat_PR[0];
+	q_error[1] = current_quat_PR[0]*target_quat_PR[1] - current_quat_PR[1]*target_quat_PR[0] + current_quat_PR[2]*target_quat_PR[3] - current_quat_PR[3]*target_quat_PR[2];
+	q_error[2] = current_quat_PR[0]*target_quat_PR[2] - current_quat_PR[2]*target_quat_PR[0] - current_quat_PR[1]*target_quat_PR[3] + current_quat_PR[3]*target_quat_PR[1];
+	q_error[3] = current_quat_PR[0]*target_quat_PR[3] + current_quat_PR[1]*target_quat_PR[2] - current_quat_PR[2]*target_quat_PR[1] - current_quat_PR[3]*target_quat_PR[0];
 	
 	q_norm = sqrt(q_error[0]*q_error[0] + q_error[1]*q_error[1] + q_error[2]*q_error[2] + q_error[3]*q_error[3]);
 	q_error[0] = q_error[0] / q_norm;
@@ -369,4 +396,8 @@ void ctrl_Attitude(void)
 	PID_run(&Roll_Angel_PID, PR_rotation[0]);
 	PID_run(&Pitch_Angel_PID, PR_rotation[1]);
 	PID_run(&Yaw_Angel_PID, PR_rotation[2]);
+	
+	target_angular_rate_body[0] = Rotation_Matrix[0][0]*Roll_Angel_PID.PID_Out + Rotation_Matrix[0][1]*Pitch_Angel_PID.PID_Out + Rotation_Matrix[0][2]*Yaw_Angel_PID.PID_Out;
+	target_angular_rate_body[1] = Rotation_Matrix[1][0]*Roll_Angel_PID.PID_Out + Rotation_Matrix[1][1]*Pitch_Angel_PID.PID_Out + Rotation_Matrix[1][2]*Yaw_Angel_PID.PID_Out;
+	target_angular_rate_body[2] = Rotation_Matrix[2][0]*Roll_Angel_PID.PID_Out + Rotation_Matrix[2][1]*Pitch_Angel_PID.PID_Out + Rotation_Matrix[2][2]*Yaw_Angel_PID.PID_Out;
 }
