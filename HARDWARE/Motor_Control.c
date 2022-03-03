@@ -76,13 +76,22 @@ void cal_encoder_angle(void)
 		roll_encoder = Get_Encoder.Angle_R * DEG2RAD;
 	}
 	
-	float temp_pitch_encoder = Get_Encoder.Angle_P - 50;
+	float temp_pitch_encoder = Get_Encoder.Angle_P - 52;
 	if( Get_Encoder.Angle_P > 180 )
 	{
 		temp_pitch_encoder = temp_pitch_encoder - 360;
 	}
 	pitch_encoder = -temp_pitch_encoder * DEG2RAD;
-		
+	
+	float temp_yaw_encoder = Get_Encoder.Angle_Y + 45;
+	if( temp_yaw_encoder > 180)
+	{
+		yaw_encoder = (temp_yaw_encoder - 360) * DEG2RAD;
+	}
+	else
+	{
+		yaw_encoder = temp_yaw_encoder * DEG2RAD;
+	}
 }
 
 u8 cmd_value = 0;//0 - 正常运行 1 - 校准
