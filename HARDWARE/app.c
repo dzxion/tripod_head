@@ -8,6 +8,7 @@ PIDFloat_Obj Roll_Angel_PID;
 PIDFloat_Obj Roll_Speed_PID;
 
 PIDFloat_Obj Yaw_Angel_PID;
+PIDFloat_Obj Yaw_Angel_e_PID;
 PIDFloat_Obj Yaw_Speed_PID;
 
 PIDFloat_Obj TempSpeed_PID;
@@ -141,6 +142,22 @@ void PID_Para_Init(void)
 	
 	Yaw_Angel_PID.I_Out = 0.0f; 
 	Yaw_Angel_PID.PID_Out = 0.0f;
+/*************************************************************/		
+	Yaw_Angel_e_PID.Kp = 2.0f;//1.0
+	Yaw_Angel_e_PID.Ki = 0.0f; //0.125 
+	
+	Yaw_Angel_e_PID.P_Min = -DutyMax;
+	Yaw_Angel_e_PID.P_Max =  DutyMax;	
+	
+	Yaw_Angel_e_PID.I_Min = -DutyMax; 
+	Yaw_Angel_e_PID.I_Max =  DutyMax;
+	
+	Yaw_Angel_e_PID.outMin = -DutyMax;
+	Yaw_Angel_e_PID.outMax =  DutyMax;	
+	
+	Yaw_Angel_e_PID.I_Out = 0.0f; 
+	Yaw_Angel_e_PID.PID_Out = 0.0f;
+	
 /*************************************************************/		
 	Yaw_Speed_PID.Kp = 0.005f; //0.01
 	Yaw_Speed_PID.Ki = 0.0005f; 
@@ -397,7 +414,16 @@ void ctrl_Attitude(void)
 	PID_run(&Pitch_Angel_PID, PR_rotation[1]);
 	PID_run(&Yaw_Angel_PID, PR_rotation[2]);
 	
-	target_angular_rate_body[0] = Rotation_Matrix[0][0]*Roll_Angel_PID.PID_Out + Rotation_Matrix[0][1]*Pitch_Angel_PID.PID_Out + Rotation_Matrix[0][2]*Yaw_Angel_PID.PID_Out;
-	target_angular_rate_body[1] = Rotation_Matrix[1][0]*Roll_Angel_PID.PID_Out + Rotation_Matrix[1][1]*Pitch_Angel_PID.PID_Out + Rotation_Matrix[1][2]*Yaw_Angel_PID.PID_Out;
-	target_angular_rate_body[2] = Rotation_Matrix[2][0]*Roll_Angel_PID.PID_Out + Rotation_Matrix[2][1]*Pitch_Angel_PID.PID_Out + Rotation_Matrix[2][2]*Yaw_Angel_PID.PID_Out;
+	//Æ«º½¿ØÖÆ
+	float angle_error = (target_Yaw - yaw_encoder) * RAD2DEG;
+	PID_run(&Yaw_Angel_e_PID, angle_error);
+	
+	float target_angular_rate_ENU[3];
+	target_angular_rate_ENU[0] = Roll_Angel_PID.PID_Out;
+	target_angular_rate_ENU[1] = Pitch_Angel_PID.PID_Out;
+	target_angular_rate_ENU[2] = Yaw_Angel_PID.PID_Out + Yaw_Angel_e_PID.PID_Out;
+	
+	target_angular_rate_body[0] = Rotation_Matrix[0][0]*target_angular_rate_ENU[0] + Rotation_Matrix[0][1]*target_angular_rate_ENU[1] + Rotation_Matrix[0][2]*target_angular_rate_ENU[2];
+	target_angular_rate_body[1] = Rotation_Matrix[1][0]*target_angular_rate_ENU[0] + Rotation_Matrix[1][1]*target_angular_rate_ENU[1] + Rotation_Matrix[1][2]*target_angular_rate_ENU[2];
+	target_angular_rate_body[2] = Rotation_Matrix[2][0]*target_angular_rate_ENU[0] + Rotation_Matrix[2][1]*target_angular_rate_ENU[1] + Rotation_Matrix[2][2]*target_angular_rate_ENU[2];
 }
