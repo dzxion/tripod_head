@@ -76,7 +76,7 @@ void cal_encoder_angle(void)
 		roll_encoder = Get_Encoder.Angle_R * DEG2RAD;
 	}
 	
-	float temp_pitch_encoder = Get_Encoder.Angle_P - 45;
+	float temp_pitch_encoder = Get_Encoder.Angle_P - 50;
 	if( Get_Encoder.Angle_P > 180 )
 	{
 		temp_pitch_encoder = temp_pitch_encoder - 360;
@@ -136,7 +136,6 @@ void Gimbal_Control(void)
 //			MS_Attitude_GyroIntegral();
 			// 姿态解算
 			MS_Attitude_Mahony();
-			
 			// 编码器角度计算
 			cal_encoder_angle();
 			// 姿态环
