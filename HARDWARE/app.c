@@ -415,7 +415,7 @@ void ctrl_Attitude(void)
 	PID_run(&Yaw_Angel_PID, PR_rotation[2]);
 	
 	//Æ«º½¿ØÖÆ
-	float angle_error = (target_Yaw - yaw_encoder) * RAD2DEG;
+	float angle_error = (target_Yaw - yaw_by_encoder) * RAD2DEG;
 	PID_run(&Yaw_Angel_e_PID, angle_error);
 	
 	float target_angular_rate_ENU[3];

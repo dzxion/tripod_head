@@ -186,9 +186,9 @@ void Gimbal_Control(void)
 //			PID_run_FloatspdVolt(&Yaw_Speed_PID,0.0f,GimbalGyro_z);
 			
 			// ¿ØÖÆÊä³ö
-			Pitch_Speed_PID.PID_Out = 0.0f;
-			Roll_Speed_PID.PID_Out = 0.0f;
-			Yaw_Speed_PID.PID_Out = 0.0f;
+//			Pitch_Speed_PID.PID_Out = 0.0f;
+//			Roll_Speed_PID.PID_Out = 0.0f;
+//			Yaw_Speed_PID.PID_Out = 0.0f;
 			
 			if(Pitch_Speed_PID.PID_Out > 0.5f)Pitch_Speed_PID.PID_Out = 0.5f; 
 			else if(Pitch_Speed_PID.PID_Out < -0.5f)Pitch_Speed_PID.PID_Out = -0.5f;
