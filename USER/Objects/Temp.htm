@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\Temp.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\Temp.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Thu Mar 03 17:07:54 2022
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Fri Mar 04 10:56:48 2022
 <BR><P>
 <H3>Maximum Stack Usage =        480 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -367,6 +367,7 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[8a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ctrl_angular_velocity
 <LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ctrl_Attitude
 <LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init_MS_Attitude
+<LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cal_encoder_angle
 <LI><a href="#[87]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MS_Attitude_Mahony
 <LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MS_Attitude_Acconly
 <LI><a href="#[105]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FOC_SVPWM8 (via Veneer)
@@ -386,6 +387,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[8a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ctrl_angular_velocity
 <LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ctrl_Attitude
 <LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init_MS_Attitude
+<LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cal_encoder_angle
 <LI><a href="#[87]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MS_Attitude_Mahony
 <LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MS_Attitude_Acconly
 </UL>
@@ -781,7 +783,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gimbal_Control
 </UL>
 
-<P><STRONG><a name="[84]"></a>Gimbal_Control</STRONG> (Thumb, 1100 bytes, Stack size 16 bytes, motor_control.o(i.Gimbal_Control))
+<P><STRONG><a name="[84]"></a>Gimbal_Control</STRONG> (Thumb, 1116 bytes, Stack size 16 bytes, motor_control.o(i.Gimbal_Control))
 <BR><BR>[Stack]<UL><LI>Max Depth = 480<LI>Call Chain = Gimbal_Control &rArr; ctrl_Attitude &rArr; __hardfp_sin &rArr; __ieee754_rem_pio2 &rArr; __aeabi_dmul &rArr; _double_epilogue &rArr; _double_round
 </UL>
 <BR>[Calls]<UL><LI><a href="#[8a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ctrl_angular_velocity
@@ -1662,6 +1664,7 @@ Global Symbols
 <LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dadd
 </UL>
 <BR>[Called By]<UL><LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init_MS_Attitude
+<LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cal_encoder_angle
 <LI><a href="#[87]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MS_Attitude_Mahony
 <LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MS_Attitude_Acconly
 </UL>
@@ -1695,6 +1698,7 @@ Global Symbols
 </UL>
 <BR>[Called By]<UL><LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ctrl_Attitude
 <LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init_MS_Attitude
+<LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cal_encoder_angle
 <LI><a href="#[87]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MS_Attitude_Mahony
 <LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MS_Attitude_Acconly
 </UL>
@@ -1712,6 +1716,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[8a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ctrl_angular_velocity
 <LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ctrl_Attitude
 <LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init_MS_Attitude
+<LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cal_encoder_angle
 <LI><a href="#[87]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MS_Attitude_Mahony
 </UL>
 
@@ -1739,6 +1744,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[8a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ctrl_angular_velocity
 <LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ctrl_Attitude
 <LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init_MS_Attitude
+<LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cal_encoder_angle
 <LI><a href="#[87]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MS_Attitude_Mahony
 </UL>
 
@@ -1763,6 +1769,7 @@ Global Symbols
 </UL>
 <BR>[Called By]<UL><LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ctrl_Attitude
 <LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init_MS_Attitude
+<LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cal_encoder_angle
 <LI><a href="#[87]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MS_Attitude_Mahony
 <LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MS_Attitude_Acconly
 </UL>
@@ -1915,8 +1922,18 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_atan2
 </UL>
 
-<P><STRONG><a name="[88]"></a>cal_encoder_angle</STRONG> (Thumb, 198 bytes, Stack size 0 bytes, motor_control.o(i.cal_encoder_angle))
-<BR><BR>[Called By]<UL><LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gimbal_Control
+<P><STRONG><a name="[88]"></a>cal_encoder_angle</STRONG> (Thumb, 1196 bytes, Stack size 88 bytes, motor_control.o(i.cal_encoder_angle))
+<BR><BR>[Stack]<UL><LI>Max Depth = 328<LI>Call Chain = cal_encoder_angle &rArr; __hardfp_sin &rArr; __ieee754_rem_pio2 &rArr; __aeabi_dmul &rArr; _double_epilogue &rArr; _double_round
+</UL>
+<BR>[Calls]<UL><LI><a href="#[b2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_f2d
+<LI><a href="#[b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_d2f
+<LI><a href="#[b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_sqrt
+<LI><a href="#[b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_sin
+<LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_cos
+<LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_atan2
+<LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_asin
+</UL>
+<BR>[Called By]<UL><LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gimbal_Control
 </UL>
 
 <P><STRONG><a name="[89]"></a>ctrl_Attitude</STRONG> (Thumb, 2086 bytes, Stack size 224 bytes, app.o(i.ctrl_Attitude))
@@ -1977,7 +1994,7 @@ Global Symbols
 <LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_asin
 </UL>
 
-<P><STRONG><a name="[101]"></a>init_MS_Attitude</STRONG> (Thumb, 1150 bytes, Stack size 72 bytes, ahrs.o(i.init_MS_Attitude))
+<P><STRONG><a name="[101]"></a>init_MS_Attitude</STRONG> (Thumb, 1290 bytes, Stack size 72 bytes, ahrs.o(i.init_MS_Attitude))
 <BR><BR>[Stack]<UL><LI>Max Depth = 312<LI>Call Chain = init_MS_Attitude &rArr; __hardfp_sin &rArr; __ieee754_rem_pio2 &rArr; __aeabi_dmul &rArr; _double_epilogue &rArr; _double_round
 </UL>
 <BR>[Calls]<UL><LI><a href="#[b2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_f2d

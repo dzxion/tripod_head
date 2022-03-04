@@ -65,6 +65,7 @@ void Task10ms(void)
 }
 
 float pitch_encoder = 0.0f, roll_encoder = 0.0f, yaw_encoder = 0.0f;
+float pitch_by_encoder = 0.0f, roll_by_encoder = 0.0f, yaw_by_encoder = 0.0f;
 void cal_encoder_angle(void)
 {
 	if( Get_Encoder.Angle_R > 180 )
@@ -92,6 +93,29 @@ void cal_encoder_angle(void)
 	{
 		yaw_encoder = temp_yaw_encoder * DEG2RAD;
 	}
+	
+	float half_sinR, half_cosR;
+	float half_sinP, half_cosP;
+	float half_sinY, half_cosY;
+	half_sinR = sin(0.5f*roll_encoder); half_cosR = cos(0.5f*roll_encoder);
+	half_sinP = sin(0.5f*pitch_encoder); half_cosP = cos(0.5f*pitch_encoder);
+	half_sinY = sin(0.5f*yaw_encoder); half_cosY = cos(0.5f*yaw_encoder);
+	
+	float q[4] = {1.0f,0.0f,0.0f,0.0f};
+	q[0] = half_cosR*half_cosP*half_cosY - half_sinR*half_sinP*half_sinY;
+	q[1] = half_sinR*half_cosP*half_cosY - half_cosR*half_sinP*half_sinY;
+	q[2] = half_cosR*half_sinP*half_cosY + half_sinR*half_cosP*half_sinY;
+	q[3] = half_cosR*half_cosP*half_sinY + half_sinR*half_sinP*half_cosY;
+	
+	float q_norm = sqrt(q[0]*q[0] + q[1]*q[1] + q[2]*q[2] + q[3]*q[3]);
+	q[0] = q[0] / q_norm;
+	q[1] = q[1] / q_norm;
+	q[2] = q[2] / q_norm;
+	q[3] = q[3] / q_norm;
+	
+	roll_by_encoder = atan2( 2.0f*(q[0]*q[1]+q[2]*q[3]) , 1.0f-2.0f*(q[1]*q[1]+q[2]*q[2]) );
+	pitch_by_encoder = asin( 2.0f*(q[0]*q[2]-q[1]*q[3]) );
+	yaw_by_encoder = atan2( 2.0f*(q[0]*q[3]+q[1]*q[2]) , 1.0f-2.0f*(q[2]*q[2]+q[3]*q[3]) );
 }
 
 u8 cmd_value = 0;//0 - 正常运行 1 - 校准
@@ -162,9 +186,9 @@ void Gimbal_Control(void)
 //			PID_run_FloatspdVolt(&Yaw_Speed_PID,0.0f,GimbalGyro_z);
 			
 			// 控制输出
-//			Pitch_Speed_PID.PID_Out = 0.0f;
-//			Roll_Speed_PID.PID_Out = 0.0f;
-//			Yaw_Speed_PID.PID_Out = 0.0f;
+			Pitch_Speed_PID.PID_Out = 0.0f;
+			Roll_Speed_PID.PID_Out = 0.0f;
+			Yaw_Speed_PID.PID_Out = 0.0f;
 			
 			if(Pitch_Speed_PID.PID_Out > 0.5f)Pitch_Speed_PID.PID_Out = 0.5f; 
 			else if(Pitch_Speed_PID.PID_Out < -0.5f)Pitch_Speed_PID.PID_Out = -0.5f;

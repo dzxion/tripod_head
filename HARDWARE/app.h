@@ -72,6 +72,7 @@ extern PIDFloat_Obj TempHeating_PID;
 extern PIDFloat_Obj TempSpeed_PID;
 
 extern float pitch_encoder, roll_encoder, yaw_encoder;
+extern float pitch_by_encoder, roll_by_encoder, yaw_by_encoder;
 extern float target_angular_rate_body[3];
 
 void Gimbal_Init(void);

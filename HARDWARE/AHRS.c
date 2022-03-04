@@ -89,6 +89,12 @@ void init_MS_Attitude(void)
 	q[2] = half_cosR*half_sinP*half_cosY + half_sinR*half_cosP*half_sinY;
 	q[3] = half_cosR*half_cosP*half_sinY - half_sinR*half_sinP*half_cosY;
 	
+	float q_norm = sqrt(q[0]*q[0] + q[1]*q[1] + q[2]*q[2] + q[3]*q[3]);
+	q[0] = q[0] / q_norm;
+	q[1] = q[1] / q_norm;
+	q[2] = q[2] / q_norm;
+	q[3] = q[3] / q_norm;
+	
 	roll = atan2( 2.0f*(q[0]*q[1]+q[2]*q[3]) , 1.0f-2.0f*(q[1]*q[1]+q[2]*q[2]) );
 	pitch = asin( 2.0f*(q[0]*q[2]-q[1]*q[3]) );
 	yaw = atan2( 2.0f*(q[0]*q[3]+q[1]*q[2]) , 1.0f-2.0f*(q[2]*q[2]+q[3]*q[3]) );
