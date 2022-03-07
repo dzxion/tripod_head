@@ -2,6 +2,7 @@
 
 /**************************************************************************************************/
 s16 Acc_x,Acc_y,Acc_z;
+s16 acc_filtered_x, acc_filtered_y, acc_filtered_z;
 s16 Gyro_x, Gyro_y, Gyro_z;//
 float GimbalGyro_x,GimbalGyro_y,GimbalGyro_z;
 float pitch = 0.0f, roll = 0.0f, yaw = 0.0f;
@@ -13,6 +14,14 @@ uint8_t ReadMPU6500[14];
 s16 MPU6500_raw;
 float  MPU6500_Temp;
 int8_t Gyro_Temp = 0;
+float k = 0.1;
+
+void Filter_LP_IIR_1(void)
+{
+	acc_filtered_x += k * ( Acc_x - acc_filtered_x );
+	acc_filtered_y += k * ( Acc_y - acc_filtered_y );
+	acc_filtered_z += k * ( Acc_z - acc_filtered_z );
+}
 
 void IMU_Update(void)
 {
@@ -48,15 +57,17 @@ void IMU_Update(void)
 	GimbalGyro_y = (Gyro_y/32.8f) ;	
 	GimbalGyro_z = (Gyro_z/32.8f) ;
 	
+	//º”ÀŸ∂»¬À≤®
+	Filter_LP_IIR_1();
 }
 
 void MS_Attitude_Acconly(void)
 {
-	float acc_norm = sqrt(Acc_x*Acc_x + Acc_y*Acc_y + Acc_z*Acc_z);
+	float acc_norm = sqrt(acc_filtered_x*acc_filtered_x + acc_filtered_y*acc_filtered_y + acc_filtered_z*acc_filtered_z);
 	float acc_norm_x,acc_norm_y,acc_norm_z;
-	acc_norm_x = Acc_x / acc_norm;
-	acc_norm_y = Acc_y / acc_norm;
-	acc_norm_z = Acc_z / acc_norm;
+	acc_norm_x = acc_filtered_x / acc_norm;
+	acc_norm_y = acc_filtered_y / acc_norm;
+	acc_norm_z = acc_filtered_z / acc_norm;
 	pitch_acc = - asin(acc_norm_x);
 	roll_acc = atan2(acc_norm_y,acc_norm_z);
 }
@@ -68,6 +79,10 @@ void init_MS_Attitude(void)
 	Acc_x = -((ReadMPU6500[4]<<8)|ReadMPU6500[5]);
 	Acc_y = -((ReadMPU6500[0]<<8)|ReadMPU6500[1]);
 	Acc_z = ((ReadMPU6500[2]<<8)|ReadMPU6500[3]);
+	
+	acc_filtered_x = Acc_x;
+	acc_filtered_y = Acc_y;
+	acc_filtered_z = Acc_z;
 	
 	float acc_norm = sqrt(Acc_x*Acc_x + Acc_y*Acc_y + Acc_z*Acc_z);
 	float acc_norm_x,acc_norm_y,acc_norm_z;
@@ -148,10 +163,10 @@ void MS_Attitude_Mahony(void)
 	float vy = 2.0f*(q[0]*q[1]+q[2]*q[3]);
 	float vz = q[0]*q[0]-q[1]*q[1]-q[2]*q[2]+q[3]*q[3];
 	
-	float acc_norm = sqrt(Acc_x*Acc_x + Acc_y*Acc_y + Acc_z*Acc_z);
-	float ax = Acc_x / acc_norm;
-	float ay = Acc_y / acc_norm;
-	float az = Acc_z / acc_norm;
+	float acc_norm = sqrt(acc_filtered_x*acc_filtered_x + acc_filtered_y*acc_filtered_y + acc_filtered_z*acc_filtered_z);
+	float ax = acc_filtered_x / acc_norm;
+	float ay = acc_filtered_y / acc_norm;
+	float az = acc_filtered_z / acc_norm;
 	
 	float ex = ay * vz - az * vy;
 	float ey = az * vx - ax * vz;
