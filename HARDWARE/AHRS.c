@@ -14,8 +14,8 @@ uint8_t ReadMPU6500[14];
 s16 MPU6500_raw;
 float  MPU6500_Temp;
 int8_t Gyro_Temp = 0;
-float k = 0.1;
 
+float k = 0.01f;
 void Filter_LP_IIR_1(void)
 {
 	acc_filtered_x += k * ( Acc_x - acc_filtered_x );
@@ -63,13 +63,13 @@ void IMU_Update(void)
 
 void MS_Attitude_Acconly(void)
 {
-	float acc_norm = sqrt(acc_filtered_x*acc_filtered_x + acc_filtered_y*acc_filtered_y + acc_filtered_z*acc_filtered_z);
+	float acc_norm = sqrtf(acc_filtered_x*acc_filtered_x + acc_filtered_y*acc_filtered_y + acc_filtered_z*acc_filtered_z);
 	float acc_norm_x,acc_norm_y,acc_norm_z;
 	acc_norm_x = acc_filtered_x / acc_norm;
 	acc_norm_y = acc_filtered_y / acc_norm;
 	acc_norm_z = acc_filtered_z / acc_norm;
-	pitch_acc = - asin(acc_norm_x);
-	roll_acc = atan2(acc_norm_y,acc_norm_z);
+	pitch_acc = - asinf(acc_norm_x);
+	roll_acc = atan2f(acc_norm_y,acc_norm_z);
 }
 
 void init_MS_Attitude(void)
@@ -153,7 +153,7 @@ void MS_Attitude_Mahony(void)
 	q[2] += 0.5f * ( tqw*delta_angle[1] - tqx*delta_angle[2] + tqz*delta_angle[0] );
 	q[3] += 0.5f * ( tqw*delta_angle[2] + tqx*delta_angle[1] - tqy*delta_angle[0] );
 	
-	float q_norm = sqrt(q[0]*q[0] + q[1]*q[1] + q[2]*q[2] + q[3]*q[3]);
+	float q_norm = sqrtf(q[0]*q[0] + q[1]*q[1] + q[2]*q[2] + q[3]*q[3]);
 	q[0] = q[0] / q_norm;
 	q[1] = q[1] / q_norm;
 	q[2] = q[2] / q_norm;
@@ -163,7 +163,7 @@ void MS_Attitude_Mahony(void)
 	float vy = 2.0f*(q[0]*q[1]+q[2]*q[3]);
 	float vz = q[0]*q[0]-q[1]*q[1]-q[2]*q[2]+q[3]*q[3];
 	
-	float acc_norm = sqrt(acc_filtered_x*acc_filtered_x + acc_filtered_y*acc_filtered_y + acc_filtered_z*acc_filtered_z);
+	float acc_norm = sqrtf(acc_filtered_x*acc_filtered_x + acc_filtered_y*acc_filtered_y + acc_filtered_z*acc_filtered_z);
 	float ax = acc_filtered_x / acc_norm;
 	float ay = acc_filtered_y / acc_norm;
 	float az = acc_filtered_z / acc_norm;
@@ -172,28 +172,28 @@ void MS_Attitude_Mahony(void)
 	float ey = az * vx - ax * vz;
 	float ez = ax * vy - ay * vx;
 	
-	float err_angle = sqrt(ex*ex + ey*ey + ez*ez);
+	float err_angle = sqrtf(ex*ex + ey*ey + ez*ez);
 	ex = ex / err_angle;
 	ey = ey / err_angle;
 	ez = ez / err_angle;
 	err_angle = err_angle * Kp;
 	
-	float half_sinerr = sin(0.5f*err_angle);
-	float half_coserr = cos(0.5f*err_angle);
+	float half_sinerr = sinf(0.5f*err_angle);
+	float half_coserr = cosf(0.5f*err_angle);
 	float q_err[4] = {half_coserr,half_sinerr*ex,half_sinerr*ey,half_sinerr*ez};
 	q[0] = q[0]*q_err[0] - q[1]*q_err[1] - q[2]*q_err[2] - q[3]*q_err[3];
 	q[1] = q[0]*q_err[1] + q[1]*q_err[0] + q[2]*q_err[3] - q[3]*q_err[2];
 	q[2] = q[0]*q_err[2] + q[2]*q_err[0] - q[1]*q_err[3] + q[3]*q_err[1];
 	q[3] = q[0]*q_err[3] + q[1]*q_err[2] - q[2]*q_err[1] + q[3]*q_err[0];
 	
-	q_norm = sqrt(q[0]*q[0] + q[1]*q[1] + q[2]*q[2] + q[3]*q[3]);
+	q_norm = sqrtf(q[0]*q[0] + q[1]*q[1] + q[2]*q[2] + q[3]*q[3]);
 	q[0] = q[0] / q_norm;
 	q[1] = q[1] / q_norm;
 	q[2] = q[2] / q_norm;
 	q[3] = q[3] / q_norm;
 	
-	roll = atan2( 2.0f*(q[0]*q[1]+q[2]*q[3]) , 1.0f-2.0f*(q[1]*q[1]+q[2]*q[2]) );
-	pitch = asin( 2.0f*(q[0]*q[2]-q[1]*q[3]) );
-	yaw = atan2( 2.0f*(q[0]*q[3]+q[1]*q[2]) , 1.0f-2.0f*(q[2]*q[2]+q[3]*q[3]) );
+	roll = atan2f( 2.0f*(q[0]*q[1]+q[2]*q[3]) , 1.0f-2.0f*(q[1]*q[1]+q[2]*q[2]) );
+	pitch = asinf( 2.0f*(q[0]*q[2]-q[1]*q[3]) );
+	yaw = atan2f( 2.0f*(q[0]*q[3]+q[1]*q[2]) , 1.0f-2.0f*(q[2]*q[2]+q[3]*q[3]) );
 }
 

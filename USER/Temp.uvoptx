@@ -225,6 +225,11 @@
           <WinNumber>1</WinNumber>
           <ItemText>yaw</ItemText>
         </Ww>
+        <Ww>
+          <count>14</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>theta_data_R,0x0A</ItemText>
+        </Ww>
       </WatchWindow1>
       <MemoryWindow1>
         <Mm>

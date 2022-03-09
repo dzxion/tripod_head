@@ -184,6 +184,41 @@ void TIM2_IRQHandler(void)
 	TIM_ClearITPendingBit(TIM2, TIM_IT_CC2); //清除中断标志位
 }
 
+//u16 duty_demp,period_demp;
+//float as5600 = 0.0f;
+//float period_f = 0.0f;
+//u16 duty2,period2;
+//u16 theta_data_P,theta_data_R;
+
+//void TIM2_IRQHandler(void)
+//{
+
+//        if (TIM_GetITStatus(TIM2, TIM_IT_CC2) != RESET)//捕获1发生捕获事件
+//        {        
+//        
+//                period_demp        =        TIM_GetCapture2(TIM2);     //采集周期
+//                period_f = 4351.0f/period_demp;
+//                duty_demp = TIM_GetCapture1(TIM2);                                 //采集占空比        
+//                duty = (u16)(duty_demp*period_f);                                 //采集占空比                                
+//                period        =        (u16)(period_demp*period_f);     //采集周期
+//             
+//			duty2 = duty;
+//                period2 = period;
+//                if(Selection_axis == 0)
+//                {
+
+//                        theta_data_P = (u16)(4096.0f*(duty-128)/(period-256));
+//                        as5600 = 360.0f*(duty-128)/(period-256);
+//                
+//                }
+//                else if(Selection_axis == 1)
+//                {
+//                        theta_data_R = (u16)(4096.0f*(duty-128)/(period-256));
+//                }
+//        }
+//        TIM_ClearITPendingBit(TIM2, TIM_IT_CC2); //清除中断标志位
+//}
+
 void TIM1_BRK_TIM15_IRQHandler(void)
 {
 	if (TIM_GetITStatus(TIM15, TIM_IT_CC1) != RESET)//捕获1发生捕获事件

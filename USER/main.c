@@ -44,6 +44,7 @@ int main(void)
 	
 //	Core_Check();// 必须执行初始化
 	Gimbal_Init();
+	
 //	TEST.flag = 1;
 //	TEST.rev1[0] = 2;
 //	TEST.rev1[1] = 3;

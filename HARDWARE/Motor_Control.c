@@ -97,9 +97,9 @@ void cal_encoder_angle(void)
 	float half_sinR, half_cosR;
 	float half_sinP, half_cosP;
 	float half_sinY, half_cosY;
-	half_sinR = sin(0.5f*roll_encoder); half_cosR = cos(0.5f*roll_encoder);
-	half_sinP = sin(0.5f*pitch_encoder); half_cosP = cos(0.5f*pitch_encoder);
-	half_sinY = sin(0.5f*yaw_encoder); half_cosY = cos(0.5f*yaw_encoder);
+	half_sinR = sinf(0.5f*roll_encoder); half_cosR = cosf(0.5f*roll_encoder);
+	half_sinP = sinf(0.5f*pitch_encoder); half_cosP = cosf(0.5f*pitch_encoder);
+	half_sinY = sinf(0.5f*yaw_encoder); half_cosY = cosf(0.5f*yaw_encoder);
 	
 	float q[4] = {1.0f,0.0f,0.0f,0.0f};
 	q[0] = half_cosR*half_cosP*half_cosY - half_sinR*half_sinP*half_sinY;
@@ -107,15 +107,15 @@ void cal_encoder_angle(void)
 	q[2] = half_cosR*half_sinP*half_cosY + half_sinR*half_cosP*half_sinY;
 	q[3] = half_cosR*half_cosP*half_sinY + half_sinR*half_sinP*half_cosY;
 	
-	float q_norm = sqrt(q[0]*q[0] + q[1]*q[1] + q[2]*q[2] + q[3]*q[3]);
+	float q_norm = sqrtf(q[0]*q[0] + q[1]*q[1] + q[2]*q[2] + q[3]*q[3]);
 	q[0] = q[0] / q_norm;
 	q[1] = q[1] / q_norm;
 	q[2] = q[2] / q_norm;
 	q[3] = q[3] / q_norm;
 	
-	roll_by_encoder = atan2( 2.0f*(q[0]*q[1]+q[2]*q[3]) , 1.0f-2.0f*(q[1]*q[1]+q[2]*q[2]) );
-	pitch_by_encoder = asin( 2.0f*(q[0]*q[2]-q[1]*q[3]) );
-	yaw_by_encoder = atan2( 2.0f*(q[0]*q[3]+q[1]*q[2]) , 1.0f-2.0f*(q[2]*q[2]+q[3]*q[3]) );
+	roll_by_encoder = atan2f( 2.0f*(q[0]*q[1]+q[2]*q[3]) , 1.0f-2.0f*(q[1]*q[1]+q[2]*q[2]) );
+	pitch_by_encoder = asinf( 2.0f*(q[0]*q[2]-q[1]*q[3]) );
+	yaw_by_encoder = atan2f( 2.0f*(q[0]*q[3]+q[1]*q[2]) , 1.0f-2.0f*(q[2]*q[2]+q[3]*q[3]) );
 }
 
 u8 cmd_value = 0;//0 - 正常运行 1 - 校准
@@ -161,20 +161,23 @@ void Gimbal_Control(void)
 				Tick10ms++;
 				system_time++;
 			}
+//			GPIO_ResetBits(GPIOB,GPIO_Pin_6);	
 			
 			// 传感器数据更新
-			IMU_Update();
+			IMU_Update();//50us
 			// 加速度解算的姿态用作参考
-			MS_Attitude_Acconly();
+			MS_Attitude_Acconly();//10us
 //			MS_Attitude_GyroIntegral();
 			// 姿态解算
-			MS_Attitude_Mahony();
+			MS_Attitude_Mahony();//30us
 			// 编码器角度计算
-			cal_encoder_angle();
+			cal_encoder_angle();//20us
 			// 姿态环
-			ctrl_Attitude();
+			ctrl_Attitude();//25us
 			// 角速度环
-			ctrl_angular_velocity(target_angular_rate_body[0],target_angular_rate_body[1],target_angular_rate_body[2],GimbalGyro_x,GimbalGyro_y,GimbalGyro_z);
+			ctrl_angular_velocity(target_angular_rate_body[0],target_angular_rate_body[1],target_angular_rate_body[2],GimbalGyro_x,GimbalGyro_y,GimbalGyro_z);//15us
+			
+//			GPIO_SetBits(GPIOB,GPIO_Pin_6);	
 			
 ////			PID_run_FloatspdVolt(&Pitch_Angel_PID,0.0f,pitch);//角度环
 //			PID_run_FloatspdVolt(&Pitch_Speed_PID,0.0f,GimbalGyro_y);//角速度环
