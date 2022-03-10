@@ -1,5 +1,6 @@
 #include "app.h"
 #include <float.h>
+#include <stdbool.h>
 
 PIDFloat_Obj Pitch_Angel_PID;
 PIDFloat_Obj Pitch_Speed_PID;
@@ -308,6 +309,8 @@ void ctrl_angular_velocity(float target_angular_velocity_x,float target_angular_
 float target_Roll = 0.0f, target_Pitch = 0.0f, target_Yaw = 0.0f;
 float target_angular_rate_body[3];
 float Ps = 1.0f;
+bool Yaw_Control_Enabled = false;
+
 void ctrl_Attitude(void)
 {
 	//获取当前四元数的Pitch Roll分量四元数
@@ -415,8 +418,135 @@ void ctrl_Attitude(void)
 	PID_run(&Yaw_Angel_PID, PR_rotation[2]);
 	
 	//偏航控制
-	float angle_error = (target_Yaw - yaw_by_encoder) * RAD2DEG;
-	PID_run(&Yaw_Angel_e_PID, angle_error);
+	if ( Yaw_Control_Enabled == true )
+	{
+//		float angle_error = (target_Yaw - yaw_by_encoder) * RAD2DEG;//三轴编码器算的航向
+		float angle_error = (target_Yaw - yaw_encoder) * RAD2DEG;//偏航电机的角度
+		PID_run(&Yaw_Angel_e_PID, angle_error);
+	}
+	
+	float target_angular_rate_ENU[3];
+	target_angular_rate_ENU[0] = Roll_Angel_PID.PID_Out;
+	target_angular_rate_ENU[1] = Pitch_Angel_PID.PID_Out;
+	target_angular_rate_ENU[2] = Yaw_Angel_PID.PID_Out + Yaw_Angel_e_PID.PID_Out;
+	
+	target_angular_rate_body[0] = Rotation_Matrix[0][0]*target_angular_rate_ENU[0] + Rotation_Matrix[0][1]*target_angular_rate_ENU[1] + Rotation_Matrix[0][2]*target_angular_rate_ENU[2];
+	target_angular_rate_body[1] = Rotation_Matrix[1][0]*target_angular_rate_ENU[0] + Rotation_Matrix[1][1]*target_angular_rate_ENU[1] + Rotation_Matrix[1][2]*target_angular_rate_ENU[2];
+	target_angular_rate_body[2] = Rotation_Matrix[2][0]*target_angular_rate_ENU[0] + Rotation_Matrix[2][1]*target_angular_rate_ENU[1] + Rotation_Matrix[2][2]*target_angular_rate_ENU[2];
+}
+
+void ctrl_Attitude_Q(void)
+{
+	//获取当前四元数的Pitch Roll分量四元数
+	float current_quat_PR[4];
+//	float AirframeQuat[4] = {q[0],q[1],q[2],q[3]};
+	float Yaw = atan2f( 2.0f*(q[0]*q[3]+q[1]*q[2]) , 1.0f-2.0f*(q[2]*q[2]+q[3]*q[3]) );
+	float half_sinYaw, half_cosYaw;
+	half_sinYaw = sinf(0.5f*Yaw); half_cosYaw = cosf(0.5f*Yaw);
+//	float YawQuat[4] = {half_cosYaw,0,0,-half_sinYaw};
+	
+	current_quat_PR[0] = q[0]*half_cosYaw + q[3]*half_sinYaw;
+	current_quat_PR[1] = q[1]*half_cosYaw + q[2]*half_sinYaw;
+	current_quat_PR[2] = q[2]*half_cosYaw - q[1]*half_sinYaw;
+	current_quat_PR[3] = q[3]*half_cosYaw - q[0]*half_sinYaw;
+	
+	float q_norm = sqrtf(current_quat_PR[0]*current_quat_PR[0] + current_quat_PR[1]*current_quat_PR[1] + current_quat_PR[2]*current_quat_PR[2] + current_quat_PR[3]*current_quat_PR[3]);
+	current_quat_PR[0] = current_quat_PR[0] / q_norm;
+	current_quat_PR[1] = current_quat_PR[1] / q_norm;
+	current_quat_PR[2] = current_quat_PR[2] / q_norm;
+	current_quat_PR[3] = current_quat_PR[3] / q_norm;
+	
+	//计算旋转矩阵
+	current_quat_PR[1] = -current_quat_PR[1];current_quat_PR[2] = -current_quat_PR[2];current_quat_PR[3] = -current_quat_PR[3];
+	float Rotation_Matrix[3][3];
+	float qw2 = current_quat_PR[0] * current_quat_PR[0];
+	float qx2 = current_quat_PR[1] * current_quat_PR[1];
+	float qy2 = current_quat_PR[2] * current_quat_PR[2];
+	float qz2 = current_quat_PR[3] * current_quat_PR[3];
+	float qwx = current_quat_PR[0] * current_quat_PR[1];
+	float qwy = current_quat_PR[0] * current_quat_PR[2];
+	float qwz = current_quat_PR[0] * current_quat_PR[3];
+	float qxy = current_quat_PR[1] * current_quat_PR[2];
+	float qxz = current_quat_PR[1] * current_quat_PR[3];
+	float qyz = current_quat_PR[2] * current_quat_PR[3];
+	Rotation_Matrix[0][0]=qw2+qx2-qy2-qz2;	Rotation_Matrix[0][1]=2.0f*(qxy-qwz);	Rotation_Matrix[0][2]=2.0f*(qwy+qxz);
+	Rotation_Matrix[1][0]=2.0f*(qwz+qxy);	Rotation_Matrix[1][1]=qw2-qx2+qy2-qz2;	Rotation_Matrix[1][2]=2.0f*(qyz-qwx);
+	Rotation_Matrix[2][0]=2.0f*(qxz-qwy);	Rotation_Matrix[2][1]=2.0f*(qwx+qyz);	Rotation_Matrix[2][2]=qw2-qx2-qy2+qz2;
+	current_quat_PR[1] = -current_quat_PR[1];current_quat_PR[2] = -current_quat_PR[2];current_quat_PR[3] = -current_quat_PR[3];
+	
+	//使用目标角度构造目标四元数
+	float target_quat_PR[4];
+	float half_sinR, half_cosR;
+	half_sinR = sinf(0.5f*target_Roll); half_cosR = cosf(0.5f*target_Roll);
+	float half_sinP, half_cosP;
+	half_sinP = sinf(0.5f*target_Pitch); half_cosP = cosf(0.5f*target_Pitch);
+	
+	target_quat_PR[0] = half_cosR*half_cosP;
+	target_quat_PR[1] = half_cosP*half_sinR;
+	target_quat_PR[2] = half_cosR*half_sinP;
+	target_quat_PR[3] = -half_sinR*half_sinP;
+	
+	q_norm = sqrtf(target_quat_PR[0]*target_quat_PR[0] + target_quat_PR[1]*target_quat_PR[1] + target_quat_PR[2]*target_quat_PR[2] + target_quat_PR[3]*target_quat_PR[3]);
+	target_quat_PR[0] = target_quat_PR[0] / q_norm;
+	target_quat_PR[1] = target_quat_PR[1] / q_norm;
+	target_quat_PR[2] = target_quat_PR[2] / q_norm;
+	target_quat_PR[3] = target_quat_PR[3] / q_norm;
+	
+	//计算误差四元数
+	float q_error[4];
+	
+	//机体系
+//	q_error[0] = current_quat_PR[0]*target_quat_PR[0] + current_quat_PR[1]*target_quat_PR[1] + current_quat_PR[2]*target_quat_PR[2] + current_quat_PR[3]*target_quat_PR[3];
+//	q_error[1] = current_quat_PR[0]*target_quat_PR[1] - current_quat_PR[1]*target_quat_PR[0] - current_quat_PR[2]*target_quat_PR[3] + current_quat_PR[3]*target_quat_PR[2];
+//	q_error[2] = current_quat_PR[0]*target_quat_PR[2] - current_quat_PR[2]*target_quat_PR[0] + current_quat_PR[1]*target_quat_PR[3] - current_quat_PR[3]*target_quat_PR[1];
+//	q_error[3] = current_quat_PR[0]*target_quat_PR[3] - current_quat_PR[1]*target_quat_PR[2] + current_quat_PR[2]*target_quat_PR[1] - current_quat_PR[3]*target_quat_PR[0];
+	
+	//世界系
+	q_error[0] = current_quat_PR[0]*target_quat_PR[0] + current_quat_PR[1]*target_quat_PR[1] + current_quat_PR[2]*target_quat_PR[2] + current_quat_PR[3]*target_quat_PR[3];
+	q_error[1] = current_quat_PR[0]*target_quat_PR[1] - current_quat_PR[1]*target_quat_PR[0] + current_quat_PR[2]*target_quat_PR[3] - current_quat_PR[3]*target_quat_PR[2];
+	q_error[2] = current_quat_PR[0]*target_quat_PR[2] - current_quat_PR[2]*target_quat_PR[0] - current_quat_PR[1]*target_quat_PR[3] + current_quat_PR[3]*target_quat_PR[1];
+	q_error[3] = current_quat_PR[0]*target_quat_PR[3] + current_quat_PR[1]*target_quat_PR[2] - current_quat_PR[2]*target_quat_PR[1] - current_quat_PR[3]*target_quat_PR[0];
+	
+	q_norm = sqrtf(q_error[0]*q_error[0] + q_error[1]*q_error[1] + q_error[2]*q_error[2] + q_error[3]*q_error[3]);
+	q_error[0] = q_error[0] / q_norm;
+	q_error[1] = q_error[1] / q_norm;
+	q_error[2] = q_error[2] / q_norm;
+	q_error[3] = q_error[3] / q_norm;
+	
+	//计算误差旋转向量
+	float PR_rotation[3];
+	float theta = 2.0f* acosf( q_error[0] );
+	if(theta > PI)
+		theta -= 2.0f*PI;
+	float sin_half_theta = sqrtf( 1.0f - q_error[0]*q_error[0] );
+//	float scale = theta / sin_half_theta;
+	float scale;
+	if (fabsf(sin_half_theta) < FLT_EPSILON)
+		scale = 0.5f;
+	else
+		scale = theta / sin_half_theta;
+	PR_rotation[0] = q_error[1] * scale * RAD2DEG;
+	PR_rotation[1] = q_error[2] * scale * RAD2DEG;
+	PR_rotation[2] = q_error[3] * scale * RAD2DEG;
+	
+//	float target_angular_rate[3];
+//	target_angular_rate[0] = PR_rotation[0] * Ps * RAD2DEG;
+//	target_angular_rate[1] = PR_rotation[1] * Ps * RAD2DEG;
+//	target_angular_rate[2] = PR_rotation[2] * Ps * RAD2DEG;
+//	
+//	ctrl_angular_velocity(target_angular_rate[0],target_angular_rate[1],target_angular_rate[2],GimbalGyro_x,GimbalGyro_y,GimbalGyro_z);
+	
+	//PID控制
+	PID_run(&Roll_Angel_PID, PR_rotation[0]);
+	PID_run(&Pitch_Angel_PID, PR_rotation[1]);
+	PID_run(&Yaw_Angel_PID, PR_rotation[2]);
+	
+	//偏航控制
+	if ( Yaw_Control_Enabled == true )
+	{
+		float angle_error = (target_Yaw - yaw_by_encoder) * RAD2DEG;
+		PID_run(&Yaw_Angel_e_PID, angle_error);
+	}
 	
 	float target_angular_rate_ENU[3];
 	target_angular_rate_ENU[0] = Roll_Angel_PID.PID_Out;

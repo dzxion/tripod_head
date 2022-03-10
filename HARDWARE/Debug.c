@@ -36,7 +36,7 @@ void Oscilloscope(void)
 		Debug_Data.data7  = Gyro_z;
 		Debug_Data.data8  = roll_by_encoder * RAD2DEG;
 		Debug_Data.data9  = pitch_by_encoder * RAD2DEG;
-		Debug_Data.data10 = yaw_by_encoder * RAD2DEG;
+		Debug_Data.data10 = yaw_encoder * RAD2DEG;
 		
 		Debug_Data.data11 = roll * RAD2DEG;
 		Debug_Data.data12 = pitch * RAD2DEG;
