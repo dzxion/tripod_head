@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\Temp.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\Temp.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Thu Mar 10 15:02:06 2022
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Fri Mar 11 10:42:00 2022
 <BR><P>
 <H3>Maximum Stack Usage =        312 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -1653,8 +1653,7 @@ Global Symbols
 <LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__ARM_fpclassifyf
 <LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sqrtf
 </UL>
-<BR>[Called By]<UL><LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cal_encoder_angle
-<LI><a href="#[87]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MS_Attitude_Mahony
+<BR>[Called By]<UL><LI><a href="#[87]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MS_Attitude_Mahony
 <LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MS_Attitude_Acconly
 </UL>
 
@@ -1696,7 +1695,6 @@ Global Symbols
 <LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__ARM_fpclassifyf
 </UL>
 <BR>[Called By]<UL><LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ctrl_Attitude
-<LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cal_encoder_angle
 <LI><a href="#[87]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MS_Attitude_Mahony
 <LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MS_Attitude_Acconly
 </UL>
@@ -1724,7 +1722,6 @@ Global Symbols
 </UL>
 <BR>[Called By]<UL><LI><a href="#[8a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ctrl_angular_velocity
 <LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ctrl_Attitude
-<LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cal_encoder_angle
 <LI><a href="#[87]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MS_Attitude_Mahony
 <LI><a href="#[108]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SinCosF (via Veneer)
 </UL>
@@ -1754,7 +1751,6 @@ Global Symbols
 </UL>
 <BR>[Called By]<UL><LI><a href="#[8a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ctrl_angular_velocity
 <LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ctrl_Attitude
-<LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cal_encoder_angle
 <LI><a href="#[87]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MS_Attitude_Mahony
 <LI><a href="#[108]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SinCosF (via Veneer)
 </UL>
@@ -1774,7 +1770,6 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__set_errno
 </UL>
 <BR>[Called By]<UL><LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ctrl_Attitude
-<LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cal_encoder_angle
 <LI><a href="#[87]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MS_Attitude_Mahony
 <LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MS_Attitude_Acconly
 </UL>
@@ -1937,16 +1932,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[f7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_atan2
 </UL>
 
-<P><STRONG><a name="[88]"></a>cal_encoder_angle</STRONG> (Thumb, 774 bytes, Stack size 64 bytes, motor_control.o(i.cal_encoder_angle))
-<BR><BR>[Stack]<UL><LI>Max Depth = 100<LI>Call Chain = cal_encoder_angle &rArr; __hardfp_sinf &rArr; __mathlib_rredf2
-</UL>
-<BR>[Calls]<UL><LI><a href="#[b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_sqrtf
-<LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_sinf
-<LI><a href="#[b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_cosf
-<LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_atan2f
-<LI><a href="#[b2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_asinf
-</UL>
-<BR>[Called By]<UL><LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gimbal_Control
+<P><STRONG><a name="[88]"></a>cal_encoder_angle</STRONG> (Thumb, 252 bytes, Stack size 0 bytes, motor_control.o(i.cal_encoder_angle))
+<BR><BR>[Called By]<UL><LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gimbal_Control
 </UL>
 
 <P><STRONG><a name="[89]"></a>ctrl_Attitude</STRONG> (Thumb, 1714 bytes, Stack size 200 bytes, app.o(i.ctrl_Attitude))

@@ -63,7 +63,7 @@ void Gimbal_Init(void)
 void PID_Para_Init(void)
 {
 /*************************************************************/	
-	Pitch_Angel_PID.Kp = 2.0f;//2.0
+	Pitch_Angel_PID.Kp = 5.0f;//2.0
 	Pitch_Angel_PID.Ki = 0.0f; //0.25 
 	
 	Pitch_Angel_PID.P_Min = -DutyMax;
@@ -96,7 +96,7 @@ void PID_Para_Init(void)
 
 
 /*************************************************************/	
-	Roll_Angel_PID.Kp = 2.0f;//2.0
+	Roll_Angel_PID.Kp = 5.0f;//2.0
 	Roll_Angel_PID.Ki = 0.0f;  //0.25
 	
 	Roll_Angel_PID.P_Min = -DutyMax;
@@ -144,7 +144,7 @@ void PID_Para_Init(void)
 	Yaw_Angel_PID.I_Out = 0.0f; 
 	Yaw_Angel_PID.PID_Out = 0.0f;
 /*************************************************************/		
-	Yaw_Angel_e_PID.Kp = 2.0f;//1.0
+	Yaw_Angel_e_PID.Kp = 5.0f;//1.0
 	Yaw_Angel_e_PID.Ki = 0.0f; //0.125 
 	
 	Yaw_Angel_e_PID.P_Min = -DutyMax;
@@ -309,7 +309,7 @@ void ctrl_angular_velocity(float target_angular_velocity_x,float target_angular_
 float target_Roll = 0.0f, target_Pitch = 0.0f, target_Yaw = 0.0f;
 float target_angular_rate_body[3];
 float Ps = 1.0f;
-bool Yaw_Control_Enabled = false;
+bool Yaw_Control_Enabled = true;
 
 void ctrl_Attitude(void)
 {
@@ -420,8 +420,8 @@ void ctrl_Attitude(void)
 	//偏航控制
 	if ( Yaw_Control_Enabled == true )
 	{
-//		float angle_error = (target_Yaw - yaw_by_encoder) * RAD2DEG;//三轴编码器算的航向
-		float angle_error = (target_Yaw - yaw_encoder) * RAD2DEG;//偏航电机的角度
+		float angle_error = (target_Yaw - yaw_by_encoder) * RAD2DEG;
+//		float angle_error = (target_Yaw - yaw_encoder) * RAD2DEG;
 		PID_run(&Yaw_Angel_e_PID, angle_error);
 	}
 	

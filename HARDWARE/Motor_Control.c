@@ -94,28 +94,37 @@ void cal_encoder_angle(void)
 		yaw_encoder = temp_yaw_encoder * DEG2RAD;
 	}
 	
-	float half_sinR, half_cosR;
-	float half_sinP, half_cosP;
-	float half_sinY, half_cosY;
-	half_sinR = sinf(0.5f*roll_encoder); half_cosR = cosf(0.5f*roll_encoder);
-	half_sinP = sinf(0.5f*pitch_encoder); half_cosP = cosf(0.5f*pitch_encoder);
-	half_sinY = sinf(0.5f*yaw_encoder); half_cosY = cosf(0.5f*yaw_encoder);
-	
-	float q[4] = {1.0f,0.0f,0.0f,0.0f};
-	q[0] = half_cosR*half_cosP*half_cosY - half_sinR*half_sinP*half_sinY;
-	q[1] = half_sinR*half_cosP*half_cosY - half_cosR*half_sinP*half_sinY;
-	q[2] = half_cosR*half_sinP*half_cosY + half_sinR*half_cosP*half_sinY;
-	q[3] = half_cosR*half_cosP*half_sinY + half_sinR*half_sinP*half_cosY;
-	
-	float q_norm = sqrtf(q[0]*q[0] + q[1]*q[1] + q[2]*q[2] + q[3]*q[3]);
-	q[0] = q[0] / q_norm;
-	q[1] = q[1] / q_norm;
-	q[2] = q[2] / q_norm;
-	q[3] = q[3] / q_norm;
-	
-	roll_by_encoder = atan2f( 2.0f*(q[0]*q[1]+q[2]*q[3]) , 1.0f-2.0f*(q[1]*q[1]+q[2]*q[2]) );
-	pitch_by_encoder = asinf( 2.0f*(q[0]*q[2]-q[1]*q[3]) );
-	yaw_by_encoder = atan2f( 2.0f*(q[0]*q[3]+q[1]*q[2]) , 1.0f-2.0f*(q[2]*q[2]+q[3]*q[3]) );
+//	float half_sinR, half_cosR;
+//	float half_sinP, half_cosP;
+//	float half_sinY, half_cosY;
+//	half_sinR = sinf(0.5f*roll_encoder); half_cosR = cosf(0.5f*roll_encoder);
+//	half_sinP = sinf(0.5f*pitch_encoder); half_cosP = cosf(0.5f*pitch_encoder);
+//	half_sinY = sinf(0.5f*yaw_encoder); half_cosY = cosf(0.5f*yaw_encoder);
+//	
+//	float q[4] = {1.0f,0.0f,0.0f,0.0f};
+//	q[0] = half_cosR*half_cosP*half_cosY - half_sinR*half_sinP*half_sinY;
+//	q[1] = half_sinR*half_cosP*half_cosY - half_cosR*half_sinP*half_sinY;
+//	q[2] = half_cosR*half_sinP*half_cosY + half_sinR*half_cosP*half_sinY;
+//	q[3] = half_cosR*half_cosP*half_sinY + half_sinR*half_sinP*half_cosY;
+//	
+//	float q_norm = sqrtf(q[0]*q[0] + q[1]*q[1] + q[2]*q[2] + q[3]*q[3]);
+//	q[0] = q[0] / q_norm;
+//	q[1] = q[1] / q_norm;
+//	q[2] = q[2] / q_norm;
+//	q[3] = q[3] / q_norm;
+//	
+//	roll_by_encoder = atan2f( 2.0f*(q[0]*q[1]+q[2]*q[3]) , 1.0f-2.0f*(q[1]*q[1]+q[2]*q[2]) );
+//	pitch_by_encoder = asinf( 2.0f*(q[0]*q[2]-q[1]*q[3]) );
+//	yaw_by_encoder = atan2f( 2.0f*(q[0]*q[3]+q[1]*q[2]) , 1.0f-2.0f*(q[2]*q[2]+q[3]*q[3]) );
+
+	if( pitch_encoder * RAD2DEG < 80 )
+	{
+		yaw_by_encoder = yaw_encoder;
+	}
+	else
+	{
+		yaw_by_encoder = roll_encoder;
+	}
 }
 
 u8 cmd_value = 0;//0 - 正常运行 1 - 校准

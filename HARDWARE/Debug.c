@@ -26,16 +26,16 @@ void Oscilloscope(void)
 	if(Oldman_i > 10)
 	{
 		Oldman_i = 0;
-		Debug_Data.data1  = target_angular_rate_body[0];//Roll_Speed_PID.PID_Out;
-		Debug_Data.data2  = target_angular_rate_body[1];//Pitch_Speed_PID.PID_Out;		
-		Debug_Data.data3  = target_angular_rate_body[2];//Yaw_Speed_PID.PID_Out;
+		Debug_Data.data1  = target_angular_rate_body[0];
+		Debug_Data.data2  = target_angular_rate_body[1];
+		Debug_Data.data3  = target_angular_rate_body[2];
 		Debug_Data.data4  = MPU6500_Temp;
 		Debug_Data.data5  = Gyro_x;
 		
 		Debug_Data.data6  = Gyro_y;
 		Debug_Data.data7  = Gyro_z;
-		Debug_Data.data8  = roll_by_encoder * RAD2DEG;
-		Debug_Data.data9  = pitch_by_encoder * RAD2DEG;
+		Debug_Data.data8  = roll_encoder * RAD2DEG;
+		Debug_Data.data9  = pitch_encoder * RAD2DEG;
 		Debug_Data.data10 = yaw_encoder * RAD2DEG;
 		
 		Debug_Data.data11 = roll * RAD2DEG;
