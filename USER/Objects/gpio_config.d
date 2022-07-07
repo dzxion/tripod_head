@@ -46,3 +46,4 @@
 .\objects\gpio_config.o: E:\software\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\gpio_config.o: ..\HARDWARE\superx_ii_api.h
 .\objects\gpio_config.o: ..\HARDWARE\cpu.h
+.\objects\gpio_config.o: E:\software\Keil\ARM\ARMCC\Bin\..\include\stdbool.h

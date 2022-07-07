@@ -46,3 +46,4 @@
 .\objects\calibration.o: E:\software\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\calibration.o: ..\HARDWARE\superx_ii_api.h
 .\objects\calibration.o: ..\HARDWARE\cpu.h
+.\objects\calibration.o: E:\software\Keil\ARM\ARMCC\Bin\..\include\stdbool.h

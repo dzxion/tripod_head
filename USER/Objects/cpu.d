@@ -46,3 +46,4 @@
 .\objects\cpu.o: E:\software\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\cpu.o: ..\HARDWARE\superx_ii_api.h
 .\objects\cpu.o: ..\HARDWARE\cpu.h
+.\objects\cpu.o: E:\software\Keil\ARM\ARMCC\Bin\..\include\stdbool.h

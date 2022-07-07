@@ -46,3 +46,4 @@
 .\objects\mpu6500.o: E:\software\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\mpu6500.o: ..\HARDWARE\superx_ii_api.h
 .\objects\mpu6500.o: ..\HARDWARE\cpu.h
+.\objects\mpu6500.o: E:\software\Keil\ARM\ARMCC\Bin\..\include\stdbool.h

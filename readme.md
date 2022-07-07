@@ -14,7 +14,7 @@ GimbalGyro_x 用于控制的角速度 deg/s
 使用定时器2捕获编码器数据
 
 控制
-频率： 2000hz 0.5ms 输出一次控制
+频率： 2000Hz 0.5ms 解算和控制频率都是2000Hz
 
 pitch板：
 1.串口通信
@@ -34,3 +34,15 @@ roll-yaw板：
 坐标系：
 相机坐标系 前左上
 电机坐标系 前左上
+
+电机校准
+```c
+Get_Encoder.Angle_P = 0.703125f * ((u16)(duty_data + 225)%512);
+Get_Encoder.Angle_R = 0.703125f * ((u16)(duty_data + 158)%512);
+Get_Encoder.Angle_Y = 0.703125f * ((u16)(duty_data_Y + 102)%512);
+```
+
+编码器零点
+```c
+float roll_encoder_offset = 0.0f,pitch_encoder_offset = -50.0f,yaw_encoder_offset = 45.0f;
+```

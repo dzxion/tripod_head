@@ -46,5 +46,5 @@
 .\objects\app.o: E:\software\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\app.o: ..\HARDWARE\superx_ii_api.h
 .\objects\app.o: ..\HARDWARE\cpu.h
-.\objects\app.o: E:\software\Keil\ARM\ARMCC\Bin\..\include\float.h
 .\objects\app.o: E:\software\Keil\ARM\ARMCC\Bin\..\include\stdbool.h
+.\objects\app.o: E:\software\Keil\ARM\ARMCC\Bin\..\include\float.h

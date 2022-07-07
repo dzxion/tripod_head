@@ -25,6 +25,7 @@
 #include "stdio.h"
 #include "superx_ii_api.h"
 #include "cpu.h"
+#include <stdbool.h>
 
 #define VERSION(ver, sub,reg, biuld) (((uint32_t)ver << 24)|((uint32_t)sub << 16)|((uint32_t)reg << 8)|(biuld & 0xFF))
 
@@ -55,8 +56,23 @@ typedef struct
 	float Out_Filter;
 }PIDFloat_Obj;
 
+typedef struct
+{
+	float Angle_speed_P;
+	float Angle_speed_R;
+	float Angle_speed_Y;
+}Angle_speed_t;
+
+typedef struct
+{
+	float Angle_P;
+	float Angle_R;
+	float Angle_Y;
+}Encoder_t;
+
 extern PIDFloat_Obj Pitch_Angel_PID;
 extern PIDFloat_Obj Pitch_Speed_PID;
+extern PIDFloat_Obj Pitch_Encoder_PID;
 
 extern PIDFloat_Obj Pitch_Merge_PID;
 extern PIDFloat_Obj Roll_Merge_PID;
@@ -64,9 +80,11 @@ extern PIDFloat_Obj yaw_Merge_PID;
 
 extern PIDFloat_Obj Roll_Angel_PID;
 extern PIDFloat_Obj Roll_Speed_PID;
+extern PIDFloat_Obj Roll_Encoder_PID;
 
 extern PIDFloat_Obj Yaw_Angel_PID;
 extern PIDFloat_Obj Yaw_Speed_PID;
+extern PIDFloat_Obj Yaw_Encoder_PID;
 
 extern PIDFloat_Obj TempHeating_PID;
 extern PIDFloat_Obj TempSpeed_PID;
@@ -74,6 +92,10 @@ extern PIDFloat_Obj TempSpeed_PID;
 extern float pitch_encoder, roll_encoder, yaw_encoder;
 extern float pitch_by_encoder, roll_by_encoder, yaw_by_encoder;
 extern float target_angular_rate_body[3];
+extern float debug_yaw;
+extern float debug_yaw_angle;
+extern float debug_buf[16];
+extern bool calib_gyroscope;
 
 void Gimbal_Init(void);
 void Para_Init(void);
@@ -81,6 +103,8 @@ void Para_Init(void);
 void ctrl_angular_velocity(float target_angular_velocity_x,float target_angular_velocity_y,float target_angular_velocity_z,
 						   float current_angular_velocity_x,float current_angular_velocity_y,float current_angular_velocity_z);
 void ctrl_Attitude(void);
+void ctrl_Attitude_Q(void);
+void ctrl_encoder(void);
 STM32F303_RAMFUNC float PID_run_FloatspdVolt(PIDFloat_Obj* handle,float GivenAngle,float FeedbackAngle);
 
 	

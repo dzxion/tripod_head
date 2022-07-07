@@ -1,12 +1,17 @@
 #include "app.h"
+#include "AHRS.h"
 
 /**************************************************************************************************/
+
+Vector3 gyro_s,acc_s;
 s16 Acc_x,Acc_y,Acc_z;
 s16 acc_filtered_x, acc_filtered_y, acc_filtered_z;
 s16 Gyro_x, Gyro_y, Gyro_z;//
 float GimbalGyro_x,GimbalGyro_y,GimbalGyro_z;
+float GimbalAcc_x_filted,GimbalAcc_y_filted,GimbalAcc_z_filted;
 float pitch = 0.0f, roll = 0.0f, yaw = 0.0f;
 float pitch_acc = 0.0f, roll_acc = 0.0f, yaw_acc = 0.0f;
+float pitch_acc_filted = 0.0f, roll_acc_filted = 0.0f, yaw_acc_filted = 0.0f;
 float q[4] = {1.0f,0.0f,0.0f,0.0f};
 
 uint8_t ReadMPU6500[14];
@@ -59,15 +64,46 @@ void IMU_Update(void)
 	
 	//加速度滤波
 	Filter_LP_IIR_1();
+	GimbalAcc_x_filted = acc_filtered_x/8192.0f;
+	GimbalAcc_y_filted = acc_filtered_y/8192.0f;
+	GimbalAcc_z_filted = acc_filtered_z/8192.0f;
+}
+
+float sum_gyro[3] = {0.0f, 0.0f, 0.0f};
+//float sum_acc[3] = {0.0f, 0.0f, 0.0f};
+float GyroOffset[3] = {0.0f, 0.0f, 0.0f};//陀螺原始AD
+uint8_t calib_n = 0;
+void cal_gyro_bias(void)
+{
+	sum_gyro[0] += Gyro_x;
+	sum_gyro[1] += Gyro_y;
+	sum_gyro[2] += Gyro_z;
+	++calib_n;
+	if( calib_n >= 200 )
+	{
+		calib_gyroscope = false;
+		float invN = 1.0f/calib_n;
+		GyroOffset[0] = sum_gyro[0]*invN;
+		GyroOffset[1] = sum_gyro[1]*invN;
+		GyroOffset[2] = sum_gyro[2]*invN;
+	}
 }
 
 void MS_Attitude_Acconly(void)
 {
-	float acc_norm = sqrtf(acc_filtered_x*acc_filtered_x + acc_filtered_y*acc_filtered_y + acc_filtered_z*acc_filtered_z);
+	float acc_norm_filted = sqrtf(acc_filtered_x*acc_filtered_x + acc_filtered_y*acc_filtered_y + acc_filtered_z*acc_filtered_z);
+	float acc_norm_x_filted,acc_norm_y_filted,acc_norm_z_filted;
+	acc_norm_x_filted = acc_filtered_x / acc_norm_filted;
+	acc_norm_y_filted = acc_filtered_y / acc_norm_filted;
+	acc_norm_z_filted = acc_filtered_z / acc_norm_filted;
+	pitch_acc_filted = - asinf(acc_norm_x_filted);
+	roll_acc_filted = atan2f(acc_norm_y_filted,acc_norm_z_filted);
+	
+	float acc_norm = sqrtf(Acc_x*Acc_x + Acc_y*Acc_y + Acc_z*Acc_z);
 	float acc_norm_x,acc_norm_y,acc_norm_z;
-	acc_norm_x = acc_filtered_x / acc_norm;
-	acc_norm_y = acc_filtered_y / acc_norm;
-	acc_norm_z = acc_filtered_z / acc_norm;
+	acc_norm_x = Acc_x / acc_norm;
+	acc_norm_y = Acc_y / acc_norm;
+	acc_norm_z = Acc_z / acc_norm;
 	pitch_acc = - asinf(acc_norm_x);
 	roll_acc = atan2f(acc_norm_y,acc_norm_z);
 }
@@ -116,9 +152,10 @@ void init_MS_Attitude(void)
 }
 
 float sample_time_gyro = 0.0005f;
-float delta_angle[3] = {0.0f,0.0f,0.0f};
+//float delta_angle[3] = {0.0f,0.0f,0.0f};
 void MS_Attitude_GyroIntegral(void)
 {
+	float delta_angle[3];
 	delta_angle[0] = GimbalGyro_x * DEG2RAD * sample_time_gyro;
 	delta_angle[1] = GimbalGyro_y * DEG2RAD * sample_time_gyro;
 	delta_angle[2] = GimbalGyro_z * DEG2RAD * sample_time_gyro;
@@ -140,12 +177,13 @@ void MS_Attitude_GyroIntegral(void)
 	yaw = atan2( 2.0f*(q[0]*q[3]+q[1]*q[2]) , 1.0f-2.0f*(q[2]*q[2]+q[3]*q[3]) );
 }
 
-float Kp = 0.1f;
+float Kp = 0.0f;
 void MS_Attitude_Mahony(void)
 {
-	delta_angle[0] = GimbalGyro_x * DEG2RAD * sample_time_gyro;
-	delta_angle[1] = GimbalGyro_y * DEG2RAD * sample_time_gyro;
-	delta_angle[2] = GimbalGyro_z * DEG2RAD * sample_time_gyro;
+	float delta_angle[3];
+	delta_angle[0] = (GimbalGyro_x - GyroOffset[0]/32.8f) * DEG2RAD * sample_time_gyro;
+	delta_angle[1] = (GimbalGyro_y - GyroOffset[1]/32.8f) * DEG2RAD * sample_time_gyro;
+	delta_angle[2] = (GimbalGyro_z - GyroOffset[2]/32.8f) * DEG2RAD * sample_time_gyro;
 	
 	float tqw=q[0];	float tqx=q[1];	float tqy=q[2];	float tqz=q[3];
 	q[0] += 0.5f * ( -tqx*delta_angle[0] - tqy*delta_angle[1] - tqz*delta_angle[2] );
@@ -195,5 +233,107 @@ void MS_Attitude_Mahony(void)
 	roll = atan2f( 2.0f*(q[0]*q[1]+q[2]*q[3]) , 1.0f-2.0f*(q[1]*q[1]+q[2]*q[2]) );
 	pitch = asinf( 2.0f*(q[0]*q[2]-q[1]*q[3]) );
 	yaw = atan2f( 2.0f*(q[0]*q[3]+q[1]*q[2]) , 1.0f-2.0f*(q[2]*q[2]+q[3]*q[3]) );
+	
 }
 
+float Kp_acc = 1.0f;
+float Ki_acc = 0.001f;
+float gyro_bias[3] = {0.0f, 0.0f, 0.0f};
+float bias_max = 0.05f;
+float gyro[3];
+const float upper_accel_limit = 1.05f;
+const float lower_accel_limit = 0.95f;
+void MS_Attitude_Mahony_Bias(void)
+{
+	// Angular rate of correction
+	float corr[3] = {0.0f, 0.0f, 0.0f};
+//	float delta_angle[3];
+	
+//	float gyro[3];
+	gyro[0] = (GimbalGyro_x - GyroOffset[0]/32.8f) * DEG2RAD;
+	gyro[1] = (GimbalGyro_y - GyroOffset[1]/32.8f) * DEG2RAD;
+	gyro[2] = (GimbalGyro_z - GyroOffset[2]/32.8f) * DEG2RAD;
+	float spinRate = sqrtf(gyro[0]*gyro[0] + gyro[1]*gyro[1] + gyro[2]*gyro[2]);
+	
+//	// Accelerometer correction
+	float vx = 2.0f*(q[1]*q[3]-q[0]*q[2]);
+	float vy = 2.0f*(q[0]*q[1]+q[2]*q[3]);
+	float vz = q[0]*q[0]-q[1]*q[1]-q[2]*q[2]+q[3]*q[3];
+	
+	// fuse accel data only if its norm is close to 1 g (reduces drift).
+	const float acc_norm_filted = sqrtf(acc_filtered_x*acc_filtered_x + acc_filtered_y*acc_filtered_y + acc_filtered_z*acc_filtered_z);
+	const float accel_norm_sq = acc_norm_filted / 8192.0f;
+//	const float acc_norm = sqrtf(Acc_x*Acc_x + Acc_y*Acc_y + Acc_z*Acc_z);
+	
+	if ((accel_norm_sq > lower_accel_limit) && (accel_norm_sq < upper_accel_limit))
+	{
+		float ax = acc_filtered_x / acc_norm_filted;
+		float ay = acc_filtered_y / acc_norm_filted;
+		float az = acc_filtered_z / acc_norm_filted;
+	
+		float ex = ay * vz - az * vy;
+		float ey = az * vx - ax * vz;
+		float ez = ax * vy - ay * vx;
+		
+		corr[0] += ex * Kp_acc;
+		corr[1] += ey * Kp_acc;
+		corr[2] += ez * Kp_acc;
+	}
+	
+	// Gyro bias estimation
+	if (spinRate < 0.175f)
+	{
+		gyro_bias[0] += corr[0] * Ki_acc;
+		gyro_bias[1] += corr[1] * Ki_acc;
+		gyro_bias[2] += corr[2] * Ki_acc;
+//	
+//	for (int i = 0; i < 3; i++) 
+//	{
+//		if( gyro_bias[i] > bias_max)
+//		{
+//			gyro_bias[i] = bias_max;
+//		}
+//		
+//		if( gyro_bias[i] < -bias_max)
+//		{
+//			gyro_bias[i] = -bias_max;
+//		}
+//	}
+		
+	}
+//	
+	corr[0] += gyro_bias[0];
+	corr[1] += gyro_bias[1];
+	corr[2] += gyro_bias[2];
+	
+	// Feed forward gyro
+	corr[0] += gyro[0];
+	corr[1] += gyro[1];
+	corr[2] += gyro[2];
+	
+	corr[0] *= sample_time_gyro;
+	corr[1] *= sample_time_gyro;
+	corr[2] *= sample_time_gyro;
+	
+//	delta_angle[0] = (GimbalGyro_x - GyroOffset[0]/32.8f) * DEG2RAD * sample_time_gyro;
+//	delta_angle[1] = (GimbalGyro_y - GyroOffset[1]/32.8f) * DEG2RAD * sample_time_gyro;
+//	delta_angle[2] = (GimbalGyro_z - GyroOffset[2]/32.8f) * DEG2RAD * sample_time_gyro;
+	
+	// Apply correction to state
+	float tqw=q[0];	float tqx=q[1];	float tqy=q[2];	float tqz=q[3];
+	q[0] += 0.5f * ( -tqx*corr[0] - tqy*corr[1] - tqz*corr[2] );
+	q[1] += 0.5f * ( tqw*corr[0] + tqy*corr[2] - tqz*corr[1] );
+	q[2] += 0.5f * ( tqw*corr[1] - tqx*corr[2] + tqz*corr[0] );
+	q[3] += 0.5f * ( tqw*corr[2] + tqx*corr[1] - tqy*corr[0] );
+	
+	// Normalize quaternion
+	float q_norm = sqrtf(q[0]*q[0] + q[1]*q[1] + q[2]*q[2] + q[3]*q[3]);
+	q[0] = q[0] / q_norm;
+	q[1] = q[1] / q_norm;
+	q[2] = q[2] / q_norm;
+	q[3] = q[3] / q_norm;
+	
+	roll = atan2f( 2.0f*(q[0]*q[1]+q[2]*q[3]) , 1.0f-2.0f*(q[1]*q[1]+q[2]*q[2]) );
+	pitch = asinf( 2.0f*(q[0]*q[2]-q[1]*q[3]) );
+	yaw = atan2f( 2.0f*(q[0]*q[3]+q[1]*q[2]) , 1.0f-2.0f*(q[2]*q[2]+q[3]*q[3]) );
+}

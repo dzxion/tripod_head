@@ -46,3 +46,4 @@
 .\objects\can.o: E:\software\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\can.o: ..\HARDWARE\superx_ii_api.h
 .\objects\can.o: ..\HARDWARE\cpu.h
+.\objects\can.o: E:\software\Keil\ARM\ARMCC\Bin\..\include\stdbool.h

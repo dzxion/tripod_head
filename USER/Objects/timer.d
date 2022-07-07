@@ -46,3 +46,4 @@
 .\objects\timer.o: E:\software\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\timer.o: ..\HARDWARE\superx_ii_api.h
 .\objects\timer.o: ..\HARDWARE\cpu.h
+.\objects\timer.o: E:\software\Keil\ARM\ARMCC\Bin\..\include\stdbool.h

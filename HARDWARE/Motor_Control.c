@@ -1,4 +1,5 @@
 #include "app.h"
+#include <stdbool.h>
 
 u8 Get_USART3_Buff[32];
 
@@ -64,35 +65,38 @@ void Task10ms(void)
   }
 }
 
-float pitch_encoder = 0.0f, roll_encoder = 0.0f, yaw_encoder = 0.0f;
+float roll_encoder_offset = 0.0f,pitch_encoder_offset = -50.0f,yaw_encoder_offset = 45.0f;
+float roll_dir = 1.0f,pitch_dir = -1.0f,yaw_dir = 1.0f;
+float pitch_encoder = 0.0f, roll_encoder = 0.0f, yaw_encoder = 0.0f;//编码器输出的角度（弧度制）
 float pitch_by_encoder = 0.0f, roll_by_encoder = 0.0f, yaw_by_encoder = 0.0f;
 void cal_encoder_angle(void)
 {
-	if( Get_Encoder.Angle_R > 180 )
+	float temp_roll_encoder = Get_Encoder.Angle_R + roll_encoder_offset;
+	if( temp_roll_encoder > 180 )
 	{
-		roll_encoder = (Get_Encoder.Angle_R - 360) * DEG2RAD;
+		temp_roll_encoder = temp_roll_encoder - 360;
 	}
-	else
-	{
-		roll_encoder = Get_Encoder.Angle_R * DEG2RAD;
-	}
+	roll_encoder = roll_dir * temp_roll_encoder * DEG2RAD;
 	
-	float temp_pitch_encoder = Get_Encoder.Angle_P - 52;
-	if( Get_Encoder.Angle_P > 180 )
+	float temp_pitch_encoder = Get_Encoder.Angle_P + pitch_encoder_offset;
+	if( temp_pitch_encoder > 180 )
 	{
 		temp_pitch_encoder = temp_pitch_encoder - 360;
 	}
-	pitch_encoder = -temp_pitch_encoder * DEG2RAD;
+	pitch_encoder = pitch_dir * temp_pitch_encoder * DEG2RAD;
+//	temp_pitch_encoder = pitch_dir * temp_pitch_encoder;
+//	if( temp_pitch_encoder > 90)
+//	{
+//		temp_pitch_encoder = 180 - temp_pitch_encoder;
+//	}
+//	pitch_encoder = temp_pitch_encoder * DEG2RAD;
 	
-	float temp_yaw_encoder = Get_Encoder.Angle_Y + 45;
+	float temp_yaw_encoder = Get_Encoder.Angle_Y + yaw_encoder_offset;
 	if( temp_yaw_encoder > 180)
 	{
-		yaw_encoder = (temp_yaw_encoder - 360) * DEG2RAD;
+		temp_yaw_encoder = temp_yaw_encoder - 360;
 	}
-	else
-	{
-		yaw_encoder = temp_yaw_encoder * DEG2RAD;
-	}
+	yaw_encoder = yaw_dir * temp_yaw_encoder * DEG2RAD;
 	
 //	float half_sinR, half_cosR;
 //	float half_sinP, half_cosP;
@@ -117,17 +121,25 @@ void cal_encoder_angle(void)
 //	pitch_by_encoder = asinf( 2.0f*(q[0]*q[2]-q[1]*q[3]) );
 //	yaw_by_encoder = atan2f( 2.0f*(q[0]*q[3]+q[1]*q[2]) , 1.0f-2.0f*(q[2]*q[2]+q[3]*q[3]) );
 
-	if( pitch_encoder * RAD2DEG < 80 )
-	{
-		yaw_by_encoder = yaw_encoder;
-	}
-	else
-	{
-		yaw_by_encoder = roll_encoder;
-	}
+//	if( pitch_encoder * RAD2DEG < 80 )
+//	{
+//		yaw_by_encoder = yaw_encoder;
+//	}
+//	else
+//	{
+//		yaw_by_encoder = roll_encoder;
+//	}
+
+	float cosp = cosf(pitch_encoder);
+    float sinp = sinf(pitch_encoder);
+	float cosr = cosf(roll_encoder);
+       
+    yaw_by_encoder = yaw_encoder * cosp * cosr + roll_encoder * sinp;
 }
 
 u8 cmd_value = 0;//0 - 正常运行 1 - 校准
+u8 control_mode = 0;//0 - 姿态控制模式 1 - 编码器控制模式
+bool calib_gyroscope = true;
 void Gimbal_Control(void)
 {	
 	uint8_t *pc = (uint8_t *)&Send_Motor;
@@ -174,17 +186,41 @@ void Gimbal_Control(void)
 			
 			// 传感器数据更新
 			IMU_Update();//50us
-			// 加速度解算的姿态用作参考
-			MS_Attitude_Acconly();//10us
+			
+			if( calib_gyroscope == true )
+			{
+				cal_gyro_bias();
+//				inited = true;
+			}
+			else
+			{
+				// 加速度解算的姿态用作参考
+				MS_Attitude_Acconly();//10us
 //			MS_Attitude_GyroIntegral();
-			// 姿态解算
-			MS_Attitude_Mahony();//30us
-			// 编码器角度计算
-			cal_encoder_angle();//20us
-			// 姿态环
-			ctrl_Attitude();//25us
-			// 角速度环
-			ctrl_angular_velocity(target_angular_rate_body[0],target_angular_rate_body[1],target_angular_rate_body[2],GimbalGyro_x,GimbalGyro_y,GimbalGyro_z);//15us
+				// 姿态解算
+//				MS_Attitude_Mahony();//30us
+				MS_Attitude_Mahony_Bias();
+				
+				// 编码器角度计算
+				cal_encoder_angle();//20us
+			
+//			if (control_mode == 0)
+//			{
+				// 姿态环
+//				ctrl_Attitude();//25us
+				ctrl_Attitude_Q();
+				
+				// 角速度环
+				ctrl_angular_velocity(target_angular_rate_body[0],target_angular_rate_body[1],target_angular_rate_body[2],gyro[0]*RAD2DEG,gyro[1]*RAD2DEG,gyro[2]*RAD2DEG);//15us
+//			}
+			}
+//			else if (control_mode == 1)
+//			{
+//				ctrl_encoder();
+//				Pitch_Speed_PID.PID_Out = Pitch_Encoder_PID.PID_Out;
+//				Roll_Speed_PID.PID_Out = Roll_Encoder_PID.PID_Out;
+//				Yaw_Speed_PID.PID_Out = Yaw_Encoder_PID.PID_Out;
+//			}
 			
 //			GPIO_SetBits(GPIOB,GPIO_Pin_6);	
 			
