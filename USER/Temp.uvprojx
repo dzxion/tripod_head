@@ -572,6 +572,11 @@
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\cpu.c</FilePath>
             </File>
+            <File>
+              <FileName>math_common.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\math_common.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

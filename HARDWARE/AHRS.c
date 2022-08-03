@@ -1,5 +1,7 @@
 #include "app.h"
 #include "AHRS.h"
+#include <float.h>
+#include "math_common.h"
 
 /**************************************************************************************************/
 
@@ -108,6 +110,9 @@ void MS_Attitude_Acconly(void)
 	roll_acc = atan2f(acc_norm_y,acc_norm_z);
 }
 
+Quaternion Attitude_quat;//相机姿态四元数
+vector3 correction_filted;//相机姿态修正量
+float roll_fc = 0.0f,pitch_fc = 0.0f,yaw_fc = 0.0f;
 void init_MS_Attitude(void)
 {
 	Read_MPU6500(ReadMPU6500);
@@ -120,35 +125,48 @@ void init_MS_Attitude(void)
 	acc_filtered_y = Acc_y;
 	acc_filtered_z = Acc_z;
 	
-	float acc_norm = sqrt(Acc_x*Acc_x + Acc_y*Acc_y + Acc_z*Acc_z);
+	float acc_norm = sqrtf(Acc_x*Acc_x + Acc_y*Acc_y + Acc_z*Acc_z);
 	float acc_norm_x,acc_norm_y,acc_norm_z;
 	acc_norm_x = Acc_x / acc_norm;
 	acc_norm_y = Acc_y / acc_norm;
 	acc_norm_z = Acc_z / acc_norm;
-	pitch = - asin(acc_norm_x);
-	roll = atan2(acc_norm_y,acc_norm_z);
+	pitch = - asinf(acc_norm_x);
+	roll = atan2f(acc_norm_y,acc_norm_z);
 	
 	float half_sinR, half_cosR;
 	float half_sinP, half_cosP;
 	float half_sinY, half_cosY;
-	half_sinR = sin(0.5f*roll); half_cosR = cos(0.5f*roll);
-	half_sinP = sin(0.5f*pitch); half_cosP = cos(0.5f*pitch);
-	half_sinY = sin(0.5f*yaw); half_cosY = cos(0.5f*yaw);
+	half_sinR = sinf(0.5f*roll); half_cosR = cosf(0.5f*roll);
+	half_sinP = sinf(0.5f*pitch); half_cosP = cosf(0.5f*pitch);
+	half_sinY = sinf(0.5f*yaw); half_cosY = cosf(0.5f*yaw);
 	
 	q[0] = half_cosR*half_cosP*half_cosY + half_sinR*half_sinP*half_sinY;
 	q[1] = half_sinR*half_cosP*half_cosY - half_cosR*half_sinP*half_sinY;
 	q[2] = half_cosR*half_sinP*half_cosY + half_sinR*half_cosP*half_sinY;
 	q[3] = half_cosR*half_cosP*half_sinY - half_sinR*half_sinP*half_cosY;
 	
-	float q_norm = sqrt(q[0]*q[0] + q[1]*q[1] + q[2]*q[2] + q[3]*q[3]);
+	float q_norm = sqrtf(q[0]*q[0] + q[1]*q[1] + q[2]*q[2] + q[3]*q[3]);
 	q[0] = q[0] / q_norm;
 	q[1] = q[1] / q_norm;
 	q[2] = q[2] / q_norm;
 	q[3] = q[3] / q_norm;
 	
-	roll = atan2( 2.0f*(q[0]*q[1]+q[2]*q[3]) , 1.0f-2.0f*(q[1]*q[1]+q[2]*q[2]) );
-	pitch = asin( 2.0f*(q[0]*q[2]-q[1]*q[3]) );
-	yaw = atan2( 2.0f*(q[0]*q[3]+q[1]*q[2]) , 1.0f-2.0f*(q[2]*q[2]+q[3]*q[3]) );
+	Attitude_quat.qw = q[0];
+	Attitude_quat.qx = q[1];
+	Attitude_quat.qy = q[2];
+	Attitude_quat.qz = q[3];
+	
+	roll = atan2f( 2.0f*(q[0]*q[1]+q[2]*q[3]) , 1.0f-2.0f*(q[1]*q[1]+q[2]*q[2]) );
+	pitch = asinf( 2.0f*(q[0]*q[2]-q[1]*q[3]) );
+	yaw = atan2f( 2.0f*(q[0]*q[3]+q[1]*q[2]) , 1.0f-2.0f*(q[2]*q[2]+q[3]*q[3]) );
+	
+	roll_fc = roll;
+	pitch_fc = pitch;
+	yaw_fc = yaw;
+	
+	correction_filted.x = 0.0f;
+	correction_filted.y = 0.0f;
+	correction_filted.z = 0.0f;
 }
 
 float sample_time_gyro = 0.0005f;
@@ -178,6 +196,7 @@ void MS_Attitude_GyroIntegral(void)
 }
 
 float Kp = 0.0f;
+//mahony不带bias解算
 void MS_Attitude_Mahony(void)
 {
 	float delta_angle[3];
@@ -236,13 +255,15 @@ void MS_Attitude_Mahony(void)
 	
 }
 
-float Kp_acc = 1.0f;
+float Kp_acc = 1.0f,Kp_yaw = 10.0f;
 float Ki_acc = 0.001f;
 float gyro_bias[3] = {0.0f, 0.0f, 0.0f};
 float bias_max = 0.05f;
 float gyro[3];
 const float upper_accel_limit = 1.05f;
 const float lower_accel_limit = 0.95f;
+bool use_yaw_encoder = true;
+//mahony带bias解算
 void MS_Attitude_Mahony_Bias(void)
 {
 	// Angular rate of correction
@@ -255,10 +276,22 @@ void MS_Attitude_Mahony_Bias(void)
 	gyro[2] = (GimbalGyro_z - GyroOffset[2]/32.8f) * DEG2RAD;
 	float spinRate = sqrtf(gyro[0]*gyro[0] + gyro[1]*gyro[1] + gyro[2]*gyro[2]);
 	
-//	// Accelerometer correction
 	float vx = 2.0f*(q[1]*q[3]-q[0]*q[2]);
 	float vy = 2.0f*(q[0]*q[1]+q[2]*q[3]);
 	float vz = q[0]*q[0]-q[1]*q[1]-q[2]*q[2]+q[3]*q[3];
+	
+	if (use_yaw_encoder == true && pitch * RAD2DEG < 45)
+	{
+		float angle_error = Kp_yaw * (yaw_by_encoder - yaw);
+		float ex = angle_error * vx;
+		float ey = angle_error * vy;
+		float ez = angle_error * vz;
+		corr[0] += ex;
+		corr[1] += ey;
+		corr[2] += ez;
+	}
+	
+//	// Accelerometer correction
 	
 	// fuse accel data only if its norm is close to 1 g (reduces drift).
 	const float acc_norm_filted = sqrtf(acc_filtered_x*acc_filtered_x + acc_filtered_y*acc_filtered_y + acc_filtered_z*acc_filtered_z);
@@ -333,7 +366,124 @@ void MS_Attitude_Mahony_Bias(void)
 	q[2] = q[2] / q_norm;
 	q[3] = q[3] / q_norm;
 	
+//	//旋转矢量转四元数尝试
+//	float rotation_vector[3];
+//	float theta = 2.0f* acosf( q[0] );
+//	if(theta > PI)
+//		theta -= 2.0f*PI;
+//	float sin_half_theta = sqrtf( 1.0f - q[0]*q[0] );
+////	float scale = theta / sin_half_theta;
+//	float scale;
+//	if (fabsf(sin_half_theta) < FLT_EPSILON)
+//		scale = 2.0f;
+//	else
+//		scale = theta / sin_half_theta;
+//	
+//	rotation_vector[0] = q[1] * scale * RAD2DEG;
+//	rotation_vector[1] = q[2] * scale * RAD2DEG;
+//	rotation_vector[2] = q[3] * scale * RAD2DEG;
+	
 	roll = atan2f( 2.0f*(q[0]*q[1]+q[2]*q[3]) , 1.0f-2.0f*(q[1]*q[1]+q[2]*q[2]) );
 	pitch = asinf( 2.0f*(q[0]*q[2]-q[1]*q[3]) );
 	yaw = atan2f( 2.0f*(q[0]*q[3]+q[1]*q[2]) , 1.0f-2.0f*(q[2]*q[2]+q[3]*q[3]) );
 }
+
+void Get_Encoder_Quat( Quaternion* q, float roll, float pitch, float yaw )
+{
+	float half_sinR, half_cosR;
+	float half_sinP, half_cosP;
+	float half_sinY, half_cosY;
+	half_sinR = sinf(0.5f*roll); half_cosR = cosf(0.5f*roll);
+	half_sinP = sinf(0.5f*pitch); half_cosP = cosf(0.5f*pitch);
+	half_sinY = sinf(0.5f*yaw); half_cosY = cosf(0.5f*yaw);
+	q->qw = half_cosR*half_cosP*half_cosY - half_sinR*half_sinP*half_sinY;
+	q->qx = half_sinR*half_cosP*half_cosY - half_cosR*half_sinP*half_sinY;
+	q->qy = half_cosR*half_sinP*half_cosY + half_sinR*half_cosP*half_sinY;
+	q->qz = half_cosR*half_cosP*half_sinY + half_sinR*half_sinP*half_cosY;
+	
+	normalize(q);
+}
+
+//使用飞控姿态修正
+float Kp_fc = 100.0f;
+float K_lp = 0.01f;
+void MS_Attitude_FC(void)
+{
+	vector3 correction;
+	correction.x = 0.0f;
+	correction.y = 0.0f;
+	correction.z = 0.0f;
+	
+	if(Tick12ms >= 12)//12ms使用飞控修正 
+	{
+		Tick12ms = 0;
+		//获取飞控姿态并转换到前左上坐标系
+		Quaternion quat_fc;
+		float roll = Fd_InsData.RollAngle * 0.1f * DEG2RAD;
+		float pitch = -Fd_InsData.PitchAngle * 0.1f * DEG2RAD;
+//		float yaw = -Fd_InsData.YawAngle * 0.1f * DEG2RAD;
+		float yaw = 0.0f;
+	
+		//计算飞控姿态四元数
+		Euler2Quat( &quat_fc, roll, pitch, yaw );
+	
+		//转换欧拉角
+//		float roll_fc,pitch_fc,yaw_fc;
+//		Quat2Euler( &roll_fc, &pitch_fc, &yaw_fc, fc_quat );
+	
+		//获取编码器角度并计算四元数
+		Quaternion quat_encoder;
+		Get_Encoder_Quat( &quat_encoder, roll_encoder * DEG2RAD, pitch_encoder * DEG2RAD, yaw_encoder * DEG2RAD);
+	
+		//结合飞控姿态计算相机姿态
+		Quaternion quat_measure;
+		Quat_Prod( &quat_measure, quat_fc, quat_encoder );
+//		float roll_cam,pitch_cam,yaw_cam;
+//		Quat2Euler( &roll_cam, &pitch_cam, &yaw_cam, current_quat );
+//		debug_buf[0] = roll_cam * RAD2DEG;
+//		debug_buf[1] = pitch_cam * RAD2DEG;
+//		debug_buf[2] = yaw_cam * RAD2DEG;
+
+		//求误差四元数
+		Quaternion current_quat_conj = Attitude_quat;
+		conjugate(&current_quat_conj);
+		Quaternion quat_error;
+		Quat_Prod( &quat_error, current_quat_conj, quat_measure );
+		vector3 rotation_error;
+		get_Rotation_vec( &rotation_error, quat_error );
+		
+		//求相机姿态修正量
+		vector3 new_data;
+		new_data.x = Kp_fc * rotation_error.x;
+		new_data.y = Kp_fc * rotation_error.y;
+		new_data.z = Kp_fc * rotation_error.z;
+		
+		//对修正量进行低通滤波
+		correction_filted.x += K_lp * ( new_data.x - correction_filted.x );
+		correction_filted.y += K_lp * ( new_data.y - correction_filted.y );
+		correction_filted.z += K_lp * ( new_data.z - correction_filted.z );
+		
+		correction.x = correction_filted.x;
+		correction.y = correction_filted.y;
+		correction.z = correction_filted.z;
+	}
+	
+//	correction.x = 0.0f;
+//	correction.y = 0.0f;
+//	correction.z = 0.0f;
+	
+	//陀螺积分
+	vector3 gyro;
+	gyro.x = (GimbalGyro_x - GyroOffset[0]/32.8f) * DEG2RAD + correction.x;
+	gyro.y = (GimbalGyro_y - GyroOffset[1]/32.8f) * DEG2RAD + correction.y;
+	gyro.z = (GimbalGyro_z - GyroOffset[2]/32.8f) * DEG2RAD + correction.z;
+	
+	vector3 delta_angle;
+	delta_angle.x = gyro.x * sample_time_gyro;
+	delta_angle.y = gyro.y * sample_time_gyro;
+	delta_angle.z = gyro.z * sample_time_gyro;
+	
+	integral( &Attitude_quat, delta_angle );
+	Quat2Euler( &roll_fc, &pitch_fc, &yaw_fc, Attitude_quat );
+}
+

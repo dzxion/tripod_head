@@ -47,3 +47,4 @@
 .\objects\motor_control.o: ..\HARDWARE\superx_ii_api.h
 .\objects\motor_control.o: ..\HARDWARE\cpu.h
 .\objects\motor_control.o: E:\software\Keil\ARM\ARMCC\Bin\..\include\stdbool.h
+.\objects\motor_control.o: ..\HARDWARE\math_common.h

@@ -4,6 +4,7 @@
 
 extern u8 Get_USART3_Buff[32];
 extern u8 Fd_InsData_State;
+extern u8 Tick12ms;
 
 typedef struct//Fd_InsData_t;
 {
@@ -45,6 +46,7 @@ typedef struct
 
 extern Send_Motor_t Send_Motor;
 extern Get_Motor_t Get_Motor;
+extern Fd_InsData_t Fd_InsData;
 
 extern float pitch_encoder, roll_encoder, yaw_encoder;
 

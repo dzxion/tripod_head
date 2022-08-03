@@ -1,5 +1,6 @@
 #include "app.h"
 #include <stdbool.h>
+#include "math_common.h"
 
 u8 Get_USART3_Buff[32];
 
@@ -9,6 +10,7 @@ Fd_InsData_t Fd_InsData;
 
 u8 Fd_InsData_State = 0;
 u8 Tick10ms = 0;
+u8 Tick12ms = 0;
 u32 system_time = 0;
 u8 time_bit = 0;
 
@@ -51,6 +53,11 @@ void can_receive(void)
 	FC_len = 0;
 }
 
+void api_port_send(int32_t len, uint8_t * data)
+{
+	can_serial_write(data,len);
+}
+
 void Task10ms(void)
 {
   if(Tick10ms >= 10) 
@@ -76,14 +83,14 @@ void cal_encoder_angle(void)
 	{
 		temp_roll_encoder = temp_roll_encoder - 360;
 	}
-	roll_encoder = roll_dir * temp_roll_encoder * DEG2RAD;
+	roll_encoder = roll_dir * temp_roll_encoder;
 	
 	float temp_pitch_encoder = Get_Encoder.Angle_P + pitch_encoder_offset;
 	if( temp_pitch_encoder > 180 )
 	{
 		temp_pitch_encoder = temp_pitch_encoder - 360;
 	}
-	pitch_encoder = pitch_dir * temp_pitch_encoder * DEG2RAD;
+	pitch_encoder = pitch_dir * temp_pitch_encoder;
 //	temp_pitch_encoder = pitch_dir * temp_pitch_encoder;
 //	if( temp_pitch_encoder > 90)
 //	{
@@ -96,7 +103,7 @@ void cal_encoder_angle(void)
 	{
 		temp_yaw_encoder = temp_yaw_encoder - 360;
 	}
-	yaw_encoder = yaw_dir * temp_yaw_encoder * DEG2RAD;
+	yaw_encoder = yaw_dir * temp_yaw_encoder;
 	
 //	float half_sinR, half_cosR;
 //	float half_sinP, half_cosP;
@@ -130,11 +137,11 @@ void cal_encoder_angle(void)
 //		yaw_by_encoder = roll_encoder;
 //	}
 
-	float cosp = cosf(pitch_encoder);
-    float sinp = sinf(pitch_encoder);
-	float cosr = cosf(roll_encoder);
+	float cosp = cosf(pitch_encoder * DEG2RAD);
+    float sinp = sinf(pitch_encoder * DEG2RAD);
+	float cosr = cosf(roll_encoder * DEG2RAD);
        
-    yaw_by_encoder = yaw_encoder * cosp * cosr + roll_encoder * sinp;
+    yaw_by_encoder = (yaw_encoder * cosp * cosr + roll_encoder * sinp) * DEG2RAD;
 }
 
 u8 cmd_value = 0;//0 - 正常运行 1 - 校准
@@ -171,8 +178,8 @@ void Gimbal_Control(void)
 			}
 		}			
     
-//		can_receive();
-//		Task10ms();
+		can_receive();
+		Task10ms();
 		
 		if(TIM4_Flag == 1 && MPU_Flag == 1)
 		{			
@@ -180,12 +187,15 @@ void Gimbal_Control(void)
 			{
 				time_bit = 0;
 				Tick10ms++;
+				Tick12ms++;
 				system_time++;
 			}
 //			GPIO_ResetBits(GPIOB,GPIO_Pin_6);	
 			
 			// 传感器数据更新
 			IMU_Update();//50us
+			// 编码器角度计算
+			cal_encoder_angle();//20us
 			
 			if( calib_gyroscope == true )
 			{
@@ -193,16 +203,14 @@ void Gimbal_Control(void)
 //				inited = true;
 			}
 			else
-			{
+			{	
 				// 加速度解算的姿态用作参考
 				MS_Attitude_Acconly();//10us
 //			MS_Attitude_GyroIntegral();
 				// 姿态解算
 //				MS_Attitude_Mahony();//30us
 				MS_Attitude_Mahony_Bias();
-				
-				// 编码器角度计算
-				cal_encoder_angle();//20us
+				MS_Attitude_FC();
 			
 //			if (control_mode == 0)
 //			{

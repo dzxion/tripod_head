@@ -1,0 +1,11 @@
+.\objects\math_common.o: ..\HARDWARE\math_common.c
+.\objects\math_common.o: ..\HARDWARE\math_common.h
+.\objects\math_common.o: E:\software\Keil\ARM\ARMCC\Bin\..\include\math.h
+.\objects\math_common.o: ..\CORE\Include\arm_math.h
+.\objects\math_common.o: ..\CORE\Include\core_cm4.h
+.\objects\math_common.o: E:\software\Keil\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\math_common.o: ..\CORE\Include\core_cmInstr.h
+.\objects\math_common.o: ..\CORE\Include\core_cmFunc.h
+.\objects\math_common.o: ..\CORE\Include\core_cm4_simd.h
+.\objects\math_common.o: E:\software\Keil\ARM\ARMCC\Bin\..\include\string.h
+.\objects\math_common.o: E:\software\Keil\ARM\ARMCC\Bin\..\include\float.h

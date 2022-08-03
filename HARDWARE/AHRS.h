@@ -2,9 +2,6 @@
 #define __AHRS_H
 #include "sys.h" 
 
-#define DEG2RAD (PI / 180.0f)
-#define RAD2DEG (180.0f / PI)
-
 typedef struct
 {
 	float x;
@@ -26,6 +23,7 @@ extern int8_t Gyro_Temp;
 extern float q[4];
 extern float gyro_bias[3];
 extern float gyro[3];
+extern float roll_fc,pitch_fc,yaw_fc;
 
 void IMU_Update(void);
 void MS_Attitude_Mahony(void);
@@ -34,5 +32,6 @@ void MS_Attitude_GyroIntegral(void);
 void init_MS_Attitude(void);
 void cal_gyro_bias(void);
 void MS_Attitude_Mahony_Bias(void);
+void MS_Attitude_FC(void);
 
 #endif

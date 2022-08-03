@@ -1,6 +1,7 @@
 #include "app.h"
 #include <float.h>
 #include <stdbool.h>
+#include "math_common.h"
 
 PIDFloat_Obj Pitch_Angel_PID;
 PIDFloat_Obj Pitch_Speed_PID;
@@ -353,10 +354,10 @@ void ctrl_angular_velocity(float target_angular_velocity_x,float target_angular_
 	//机体误差映射到三个电机上
 	float sin_roll, cos_roll;
 	float sin_pitch, cos_pitch;
-	sin_roll = sinf(roll_encoder);
-	cos_roll = cosf(roll_encoder);
-	sin_pitch = sinf(pitch_encoder);
-	cos_pitch = cosf(pitch_encoder);
+	sin_roll = sinf(roll_encoder * DEG2RAD);
+	cos_roll = cosf(roll_encoder * DEG2RAD);
+	sin_pitch = sinf(pitch_encoder * DEG2RAD);
+	cos_pitch = cosf(pitch_encoder * DEG2RAD);
 	float inv_cos_roll = 1.0f / cos_roll;
 	
 	float error_motor_speed_roll = cos_pitch * error_angular_velocity_body_x + sin_pitch * error_angular_velocity_body_z;
@@ -654,19 +655,10 @@ void ctrl_Attitude_Q(void)
 	PID_run(&Pitch_Angel_PID, PR_rotation[1]);
 	PID_run(&Yaw_Angel_PID, PR_rotation[2]);
 	
-	//跟随机体方向
-	if ( Yaw_Control_Enabled == true )
-	{
-		Yaw_Angel_PID.PID_Out = 0.0f;
-		float angle_error = (target_Yaw - yaw_by_encoder) * RAD2DEG;
-//		float angle_error = (target_Yaw - yaw_encoder) * RAD2DEG;
-		PID_run(&Yaw_Angel_e_PID, angle_error);
-	}
-	
 	float target_angular_rate_ENU[3] = {0.0f,0.0f,0.0f};
 	target_angular_rate_ENU[0] = Roll_Angel_PID.PID_Out;
 	target_angular_rate_ENU[1] = Pitch_Angel_PID.PID_Out;
-	target_angular_rate_ENU[2] = Yaw_Angel_PID.PID_Out + Yaw_Angel_e_PID.PID_Out;
+	target_angular_rate_ENU[2] = Yaw_Angel_PID.PID_Out;
 	
 	target_angular_rate_body[0] = Rotation_Matrix[0][0]*target_angular_rate_ENU[0] + Rotation_Matrix[0][1]*target_angular_rate_ENU[1] + Rotation_Matrix[0][2]*target_angular_rate_ENU[2];
 	target_angular_rate_body[1] = Rotation_Matrix[1][0]*target_angular_rate_ENU[0] + Rotation_Matrix[1][1]*target_angular_rate_ENU[1] + Rotation_Matrix[1][2]*target_angular_rate_ENU[2];
