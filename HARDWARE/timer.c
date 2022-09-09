@@ -174,11 +174,11 @@ void TIM2_IRQHandler(void)
 		if(Selection_axis == 0)
 		{
 //      Get_Encoder.Angle_P = 0.703125f * ((u16)(duty_data + ThetaOffset.P)%512);
-			Get_Encoder.Angle_P = 0.703125f * ((u16)(duty_data + 225)%512);
+			Get_Encoder.Angle_P = 0.703125f * ((u16)(duty_data + 223)%512);
 		}
 		else if(Selection_axis == 1)
 		{
-      Get_Encoder.Angle_R = 0.703125f * ((u16)(duty_data + 158)%512);
+      Get_Encoder.Angle_R = 0.703125f * ((u16)(duty_data + 161)%512);
 		}
 	}
 	TIM_ClearITPendingBit(TIM2, TIM_IT_CC2); //清除中断标志位
@@ -226,15 +226,18 @@ void TIM1_BRK_TIM15_IRQHandler(void)
 		duty = TIM_GetCapture2(TIM15); 				//采集占空比		
 		period	=	TIM_GetCapture1(TIM15);     //采集周期
 		duty_data_Y = (u16)(514.0f*duty/period-1.0f);
-		Get_Encoder.Angle_Y = 0.703125f * ((u16)(duty_data_Y + 102)%512);
+		Get_Encoder.Angle_Y = 0.703125f * ((u16)(duty_data_Y + 180)%512);
 	}
 	TIM_ClearITPendingBit(TIM15, TIM_IT_CC1); //清除中断标志位
 }
 
+
+u8 tim4_count = 0;
 u8 TIM4_Flag = 0;
 void TIM4_IRQHandler(void)
 {
 	TIM_ClearITPendingBit(TIM4 ,TIM_FLAG_Update); //清除溢出中断标志位
 	TIM4_Flag = 1;
+//	tim4_count++;
 }
 

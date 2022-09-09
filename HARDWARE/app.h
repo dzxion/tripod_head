@@ -89,6 +89,8 @@ extern PIDFloat_Obj Yaw_Encoder_PID;
 extern PIDFloat_Obj TempHeating_PID;
 extern PIDFloat_Obj TempSpeed_PID;
 
+extern vector3 target_angular_rate;
+
 extern float pitch_encoder, roll_encoder, yaw_encoder;
 extern float pitch_by_encoder, roll_by_encoder, yaw_by_encoder;
 extern float target_angular_rate_body[3];
@@ -96,16 +98,20 @@ extern float debug_yaw;
 extern float debug_yaw_angle;
 extern float debug_buf[16];
 extern bool calib_gyroscope;
+extern u8 ahrs_count;
+extern vector3 current_angular_rate;
+extern Quaternion target_quat;
 
 void Gimbal_Init(void);
 void Para_Init(void);
 
-void ctrl_angular_velocity(float target_angular_velocity_x,float target_angular_velocity_y,float target_angular_velocity_z,
-						   float current_angular_velocity_x,float current_angular_velocity_y,float current_angular_velocity_z);
+void ctrl_angular_velocity(vector3 target_angular_rate,vector3 current_angular_rate);
 void ctrl_Attitude(void);
-void ctrl_Attitude_Q(void);
+void ctrl_Attitude_Q(vector3* u, Quaternion target_quat, Quaternion current_quat);
+void ctrl_Attitude_decoup(Quaternion target_quat, Quaternion current_quat, vector3 gyro, vector3 encoder);
 void ctrl_encoder(void);
 STM32F303_RAMFUNC float PID_run_FloatspdVolt(PIDFloat_Obj* handle,float GivenAngle,float FeedbackAngle);
+STM32F303_RAMFUNC float PID_Parameter_Adjustment1(float follow);
 
 	
 #endif

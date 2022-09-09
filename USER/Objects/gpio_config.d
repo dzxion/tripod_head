@@ -26,6 +26,9 @@
 .\objects\gpio_config.o: ..\STM32F30x_StdPeriph_Driver\inc\stm32f30x_misc.h
 .\objects\gpio_config.o: ..\HARDWARE\MPU6500.h
 .\objects\gpio_config.o: ..\HARDWARE\AHRS.h
+.\objects\gpio_config.o: E:\software\Keil\ARM\ARMCC\Bin\..\include\stdbool.h
+.\objects\gpio_config.o: ..\HARDWARE\math_common.h
+.\objects\gpio_config.o: ..\HARDWARE\motor_control.h
 .\objects\gpio_config.o: ..\HARDWARE\Motor_Tim.h
 .\objects\gpio_config.o: ..\HARDWARE\FOC.h
 .\objects\gpio_config.o: E:\software\Keil\ARM\ARMCC\Bin\..\include\math.h
@@ -35,7 +38,6 @@
 .\objects\gpio_config.o: ..\HARDWARE\stmflash.h
 .\objects\gpio_config.o: ..\HARDWARE\Gpio_Config.h
 .\objects\gpio_config.o: ..\HARDWARE\Calibration.h
-.\objects\gpio_config.o: ..\HARDWARE\Motor_Control.h
 .\objects\gpio_config.o: ..\HARDWARE\led.h
 .\objects\gpio_config.o: ..\SYSTEM\usart\usart.h
 .\objects\gpio_config.o: ..\CORE\Include\arm_math.h
@@ -46,4 +48,3 @@
 .\objects\gpio_config.o: E:\software\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\gpio_config.o: ..\HARDWARE\superx_ii_api.h
 .\objects\gpio_config.o: ..\HARDWARE\cpu.h
-.\objects\gpio_config.o: E:\software\Keil\ARM\ARMCC\Bin\..\include\stdbool.h

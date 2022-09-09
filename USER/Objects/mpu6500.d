@@ -26,6 +26,9 @@
 .\objects\mpu6500.o: ..\STM32F30x_StdPeriph_Driver\inc\stm32f30x_misc.h
 .\objects\mpu6500.o: ..\HARDWARE\MPU6500.h
 .\objects\mpu6500.o: ..\HARDWARE\AHRS.h
+.\objects\mpu6500.o: E:\software\Keil\ARM\ARMCC\Bin\..\include\stdbool.h
+.\objects\mpu6500.o: ..\HARDWARE\math_common.h
+.\objects\mpu6500.o: ..\HARDWARE\motor_control.h
 .\objects\mpu6500.o: ..\HARDWARE\Motor_Tim.h
 .\objects\mpu6500.o: ..\HARDWARE\FOC.h
 .\objects\mpu6500.o: E:\software\Keil\ARM\ARMCC\Bin\..\include\math.h
@@ -35,7 +38,6 @@
 .\objects\mpu6500.o: ..\HARDWARE\stmflash.h
 .\objects\mpu6500.o: ..\HARDWARE\Gpio_Config.h
 .\objects\mpu6500.o: ..\HARDWARE\Calibration.h
-.\objects\mpu6500.o: ..\HARDWARE\Motor_Control.h
 .\objects\mpu6500.o: ..\HARDWARE\led.h
 .\objects\mpu6500.o: ..\SYSTEM\usart\usart.h
 .\objects\mpu6500.o: ..\CORE\Include\arm_math.h
@@ -46,4 +48,3 @@
 .\objects\mpu6500.o: E:\software\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\mpu6500.o: ..\HARDWARE\superx_ii_api.h
 .\objects\mpu6500.o: ..\HARDWARE\cpu.h
-.\objects\mpu6500.o: E:\software\Keil\ARM\ARMCC\Bin\..\include\stdbool.h

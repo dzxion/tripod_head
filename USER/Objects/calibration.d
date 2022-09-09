@@ -26,6 +26,9 @@
 .\objects\calibration.o: ..\STM32F30x_StdPeriph_Driver\inc\stm32f30x_misc.h
 .\objects\calibration.o: ..\HARDWARE\MPU6500.h
 .\objects\calibration.o: ..\HARDWARE\AHRS.h
+.\objects\calibration.o: E:\software\Keil\ARM\ARMCC\Bin\..\include\stdbool.h
+.\objects\calibration.o: ..\HARDWARE\math_common.h
+.\objects\calibration.o: ..\HARDWARE\motor_control.h
 .\objects\calibration.o: ..\HARDWARE\Motor_Tim.h
 .\objects\calibration.o: ..\HARDWARE\FOC.h
 .\objects\calibration.o: E:\software\Keil\ARM\ARMCC\Bin\..\include\math.h
@@ -35,7 +38,6 @@
 .\objects\calibration.o: ..\HARDWARE\stmflash.h
 .\objects\calibration.o: ..\HARDWARE\Gpio_Config.h
 .\objects\calibration.o: ..\HARDWARE\Calibration.h
-.\objects\calibration.o: ..\HARDWARE\Motor_Control.h
 .\objects\calibration.o: ..\HARDWARE\led.h
 .\objects\calibration.o: ..\SYSTEM\usart\usart.h
 .\objects\calibration.o: ..\CORE\Include\arm_math.h
@@ -46,4 +48,3 @@
 .\objects\calibration.o: E:\software\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\calibration.o: ..\HARDWARE\superx_ii_api.h
 .\objects\calibration.o: ..\HARDWARE\cpu.h
-.\objects\calibration.o: E:\software\Keil\ARM\ARMCC\Bin\..\include\stdbool.h

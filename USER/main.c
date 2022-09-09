@@ -70,7 +70,7 @@ int main(void)
 	delay_ms(10);
 //	memcpy(&rdatay.frt,&test_buff[7],4);	
 	memcpy(&TEST2,test_buff,sizeof(TEST2));
-	init_MS_Attitude();
+//	init_MS_Attitude();
 	
   while (1)
   {		

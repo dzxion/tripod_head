@@ -161,16 +161,20 @@ uint8_t CanSend(u32 id, u8 *data, u8 size)
 uint16_t can_serial_available(void)
 {
     uint16_t len = 0;
-    if (CANRx_Buffer.read_index > CANRx_Buffer.write_index)
+          uint16_t CANRx_Buffer_read_index = CANRx_Buffer.read_index;
+          uint16_t CANRx_Buffer_write_index = CANRx_Buffer.write_index;
+        
+    if (CANRx_Buffer_read_index > CANRx_Buffer_write_index)
     {
-        len = CANRx_Buffer.size + CANRx_Buffer.write_index - CANRx_Buffer.read_index;
+        len = CANRx_Buffer.size + CANRx_Buffer_write_index - CANRx_Buffer_read_index;
     }
-    else if (CANRx_Buffer.read_index  < CANRx_Buffer.write_index)
+    else if (CANRx_Buffer_read_index  < CANRx_Buffer_write_index)
     {
-        len = CANRx_Buffer.write_index - CANRx_Buffer.read_index;
+        len = CANRx_Buffer_write_index - CANRx_Buffer_read_index;
     }
     return len;
 }
+
 uint8_t can_serial_read_char(void)
 {
     uint8_t ch = 0;

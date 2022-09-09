@@ -26,6 +26,9 @@
 .\objects\debug.o: ..\STM32F30x_StdPeriph_Driver\inc\stm32f30x_misc.h
 .\objects\debug.o: ..\HARDWARE\MPU6500.h
 .\objects\debug.o: ..\HARDWARE\AHRS.h
+.\objects\debug.o: E:\software\Keil\ARM\ARMCC\Bin\..\include\stdbool.h
+.\objects\debug.o: ..\HARDWARE\math_common.h
+.\objects\debug.o: ..\HARDWARE\motor_control.h
 .\objects\debug.o: ..\HARDWARE\Motor_Tim.h
 .\objects\debug.o: ..\HARDWARE\FOC.h
 .\objects\debug.o: E:\software\Keil\ARM\ARMCC\Bin\..\include\math.h
@@ -35,7 +38,6 @@
 .\objects\debug.o: ..\HARDWARE\stmflash.h
 .\objects\debug.o: ..\HARDWARE\Gpio_Config.h
 .\objects\debug.o: ..\HARDWARE\Calibration.h
-.\objects\debug.o: ..\HARDWARE\Motor_Control.h
 .\objects\debug.o: ..\HARDWARE\led.h
 .\objects\debug.o: ..\SYSTEM\usart\usart.h
 .\objects\debug.o: ..\CORE\Include\arm_math.h
@@ -46,5 +48,3 @@
 .\objects\debug.o: E:\software\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\debug.o: ..\HARDWARE\superx_ii_api.h
 .\objects\debug.o: ..\HARDWARE\cpu.h
-.\objects\debug.o: E:\software\Keil\ARM\ARMCC\Bin\..\include\stdbool.h
-.\objects\debug.o: ..\HARDWARE\math_common.h

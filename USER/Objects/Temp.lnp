@@ -33,6 +33,7 @@
 ".\objects\superx_ii_api.o"
 ".\objects\cpu.o"
 ".\objects\math_common.o"
+".\objects\eskf.o"
 ".\arm_cortexM4lf_math.lib"
 --library_type=microlib --strict --scatter "..\HARDWARE\Gimbal3Axis_Debug.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols

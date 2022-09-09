@@ -22,15 +22,20 @@ Dialog DLL:      TCM.DLL V1.36.2.0
  
 <h2>Project:</h2>
 D:\job\XAG\project\tripod_head\USER\Temp.uvprojx
-Project File Date:  07/11/2022
+Project File Date:  08/16/2022
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 6 (build 750)', folder: 'E:\software\Keil\ARM\ARMCC\Bin'
 Build target 'Debug'
-compiling Debug.c...
+compiling AHRS.c...
+..\HARDWARE\AHRS.c(779): warning:  #550-D: variable "yaw_min"  was set but never used
+  	float roll_min,roll_max,pitch_min,pitch_max,yaw_min,yaw_max;
+..\HARDWARE\AHRS.c(779): warning:  #550-D: variable "yaw_max"  was set but never used
+  	float roll_min,roll_max,pitch_min,pitch_max,yaw_min,yaw_max;
+..\HARDWARE\AHRS.c: 2 warnings, 0 errors
 linking...
-Program Size: Code=32208 RO-data=472 RW-data=992 ZI-data=5648  
-".\Objects\Temp.axf" - 0 Error(s), 0 Warning(s).
+Program Size: Code=33584 RO-data=796 RW-data=1584 ZI-data=6440  
+".\Objects\Temp.axf" - 0 Error(s), 2 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -44,7 +49,7 @@ Package Vendor: Keil
   E:\download\Keil\Keil\STM32F3xx_DFP\2.2.1\Drivers\CMSIS\Device\ST\STM32F3xx\Include
 
 <h2>Collection of Component Files used:</h2>
-Build Time Elapsed:  00:00:06
+Build Time Elapsed:  00:00:08
 </pre>
 </body>
 </html>

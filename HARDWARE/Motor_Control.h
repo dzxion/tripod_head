@@ -30,6 +30,7 @@ typedef struct
 	u8  head_a; 
 	u8  head_b; 
 	u8  cmd; 
+//	u8  debug_count;
 	u8  check_sum; //校验和
 }Send_Motor_t; 
 
@@ -40,7 +41,8 @@ typedef struct
 	u32 rev1;
 	u8  head_a; 
 	u8  head_b; 
-	u8  cmd; 
+	u8  cmd;
+//	u8  debug_count;
 	u8  check_sum; //校验和
 }Get_Motor_t; 
 
